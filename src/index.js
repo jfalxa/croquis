@@ -1,22 +1,10 @@
 import { h, app } from 'hyperapp'
-import pico from 'picostyle'
-
-const styled = pico(h)
-
-
-const Root = styled('div')({
-  'null, html, body': {
-    width: '100%',
-    height: '100%',
-    margin: 0,
-    padding: 0
-  },
-
-  'null, body *': {
-    display: 'flex',
-    boxSizing: 'border-box'
-  }
-})
+import Root from './Root'
+import Stage from './Stage'
+import Topbar from './Topbar'
+import Toolbar from './Toolbar'
+import ElementsPanel from './ElementsPanel'
+import PropertiesPanel from './PropertiesPanel'
 
 
 const state = {}
@@ -25,7 +13,15 @@ const actions = {}
 
 const view = (state, actions) => (
   <Root>
-    <h1>Hello.</h1>
+    <Stage />
+
+    <Topbar />
+
+    <div style={{ flex: 1 }}>
+      <Toolbar />
+      <ElementsPanel />
+      <PropertiesPanel />
+    </div>
   </Root>
 )
 
