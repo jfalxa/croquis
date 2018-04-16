@@ -2,7 +2,7 @@ import { h } from 'hyperapp'
 import styled from './styled'
 
 
-const PropertiesPanelContainer = styled('div')({
+const InspectorContainer = styled('div')({
   zIndex: 1,
   flexDirection: 'column',
   marginLeft: 'auto',
@@ -10,14 +10,14 @@ const PropertiesPanelContainer = styled('div')({
 })
 
 
-const PropertiesPanel = (props) => (
-  <PropertiesPanelContainer>
+const Inspector = (props) => (
+  <InspectorContainer>
     <input placeholder="x" name="x" />
     <input placeholder="y" name="y" />
     <input placeholder="width" name="width" />
     <input placeholder="height" name="height" />
-  </PropertiesPanelContainer>
+  </InspectorContainer>
 )
 
 
-export default PropertiesPanel
+export default Inspector

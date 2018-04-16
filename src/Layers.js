@@ -2,18 +2,18 @@ import { h } from 'hyperapp'
 import styled from './styled'
 
 
-const ElementsPanelContainer = styled('div')({
+const LayersContainer = styled('div')({
   zIndex: 1,
   flexDirection: 'column',
   border: '1px solid black'
 })
 
 
-const ElementsPanel = (props) => (
-  <ElementsPanelContainer>
+const Layers = (props) => (
+  <LayersContainer>
     <span>Rectangle 1</span>
-  </ElementsPanelContainer>
+  </LayersContainer>
 )
 
 
-export default ElementsPanel
+export default Layers

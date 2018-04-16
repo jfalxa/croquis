@@ -5,8 +5,8 @@ import Stage from './Stage'
 import SelectionTool from './SelectionTool'
 import Topbar from './Topbar'
 import Toolbar from './Toolbar'
-import ElementsPanel from './ElementsPanel'
-import PropertiesPanel from './PropertiesPanel'
+import Layers from './Layers'
+import Inspector from './Inspector'
 
 
 const state = {
@@ -40,8 +40,8 @@ const view = (state, actions) => (
 
     <div style={{ flex: 1 }}>
       <Toolbar />
-      <ElementsPanel />
-      <PropertiesPanel />
+      <Layers />
+      <Inspector />
     </div>
   </Root>
 )
