@@ -6,6 +6,7 @@ const Root = styled('div')({
 
   flexDirection: 'column',
   height: '100%',
+  userSelect: 'none',
 
   'null, html, body': {
     width: '100%',
@@ -17,7 +18,8 @@ const Root = styled('div')({
   'null, body *': {
     display: 'flex',
     boxSizing: 'border-box'
-  }
+  },
+
 })
 
 

@@ -9,8 +9,9 @@ const ElementsPanelContainer = styled('div')({
 })
 
 
-const ElementsPanel = (props) => (
+const ElementsPanel = (props) => (state, actions) => (
   <ElementsPanelContainer>
+    <span>{state.selection}</span>
     <span>Rectangle 1</span>
   </ElementsPanelContainer>
 )
