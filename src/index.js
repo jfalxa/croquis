@@ -25,6 +25,15 @@ const actions = {
     selection: add ? xor(selection, elements) : elements
   }),
 
+  transformElements: ({ ids, transform }) => (state) => ({
+    elements: state.elements.reduce((elements, element) => ([
+      ...elements,
+      ids.includes(element.id)
+        ? transform(element)
+        : element
+    ]), [])
+  }),
+
   tools: {
     set: prop => prop
   }

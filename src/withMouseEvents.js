@@ -47,10 +47,11 @@ const withMouseEvents = (Component) => (props, children) => {
     props.onMouseMove && document.addEventListener('mousemove', onMouseMove)
   }
 
-  const stopListening = () => {
+  const stopListening = (element) => {
     element.removeEventListener('mousedown', onMouseDown)
     document.removeEventListener('mousemove', onMouseMove)
   }
+
 
   return (
     <Component

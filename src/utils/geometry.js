@@ -36,4 +36,22 @@ export const overlaps = (a, b) => (
   && (a.y < b.y + b.height) && (a.y + a.height > b.y)
 )
 
+export const translate = (element, translation) => ({
+  ...element,
+  x: element.x + translation[0],
+  y: element.y + translation[1]
+})
+
+export const scale = (element, scaling, center) => ({
+  ...element,
+  x: scaling[0] * ( element.x - center.x ) + center.x,
+  y: scaling[1] * ( element.y - center.y ) + center.y,
+  width: element.width * scaling[0],
+  height: element.height * scaling[1]
+})
+
+export const center = (r) => ({
+  x: r.x + r.width/2,
+  y: r.y + r.height/2
+})
 
