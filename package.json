@@ -1,0 +1,18 @@
+{
+  "name": "croquis",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-preset-stage-0": "^6.24.1",
+    "parcel-bundler": "^1.7.1"
+  },
+  "scripts": {
+    "start": "parcel src/index.html -d build",
+    "build": "parcel build src/index.html -d build"
+  },
+  "dependencies": {
+    "hyperapp": "^1.2.5",
+    "picostyle": "^1.0.2"
+  }
+}
