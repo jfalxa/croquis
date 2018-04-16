@@ -12,17 +12,14 @@ const SvgContainer = styled('svg')({
 })
 
 
-const Tool = (props, children) => {
-console.log( children )
-  return (
-    <SvgContainer
-      oncreate={props.initMouse}
-      ondestroy={props.stopMouse}
-    >
-      {children}
-    </SvgContainer>
+const Tool = (props, children) => (
+  <SvgContainer
+    oncreate={props.initMouse}
+    ondestroy={props.stopMouse}
+  >
+    {children}
+  </SvgContainer>
   )
-}
 
 
 export default withMouseEvents(Tool)

@@ -2,24 +2,7 @@ import { h } from 'hyperapp'
 import last from 'lodash/last'
 import styled from './styled'
 import Tool from './Tool'
-
-
-const rectangle = ([x, y], [width, height]) => ({
-  x: Math.min(x, x+width),
-  y: Math.min(y, y+height),
-  width: Math.abs(width),
-  height: Math.abs(height)
-})
-
-const contains = ([x, y], r) => (
-  (r.x <= x && x <= r.x + r.width)
-  && (r.y <= y && y <= r.y + r.height)
-)
-
-const overlaps = (a, b) => (
-  (a.x < b.x + b.width) && (a.x + a.width > b.x)
-  && (a.y < b.y + b.height) && (a.y + a.height > b.y)
-)
+import { rectangle, bounds, contains, overlaps } from './utils/geometry'
 
 
 const SelectionTool = (props) => (state, actions) => {
@@ -47,16 +30,31 @@ const SelectionTool = (props) => (state, actions) => {
     actions.selectElements({ elements: found })
   }
 
+  const endSelection = () => {
+    actions.tools.set({ area: null })
+  }
 
-  const { area } = state.tools
+
+  const { selection, elements, tools: { area } } = state
+  const selectionElements = selection.map(elementID => elements[elementID])
+  const selectionArea = bounds(...selectionElements)
+
+  const hasArea = Boolean(area)
+  const hasSelection = (selection.length > 0)
 
   return (
     <Tool
       onMouseDown={selectElement}
       onMouseDrag={selectElementsInArea}
-      onMouseUp={() => actions.tools.set({ area: null })}
+      onMouseUp={endSelection}
     >
-      <rect {...area} fill="none" stroke="blue" />
+      {hasArea && <rect {...area} fill="none" stroke="blue" />}
+
+      {hasSelection && <rect {...selectionArea} fill="none" stroke="blue" />}
+
+      {selectionElements.map(element => (
+        <rect {...element} fill="none" stroke="blue" />
+      ))}
     </Tool>
   )
 }
