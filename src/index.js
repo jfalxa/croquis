@@ -7,7 +7,11 @@ import ElementsPanel from './ElementsPanel'
 import PropertiesPanel from './PropertiesPanel'
 
 
-const state = {}
+const state = {
+  elements: [
+    { id: 0, type: 'rect', x: 300, y: 200, width: 300, height: 100, fill: 'red' }
+  ]
+}
 
 const actions = {}
 

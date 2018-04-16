@@ -11,9 +11,11 @@ const StageSvg = styled('svg')({
 })
 
 
-const Stage = (props) => (
+const Stage = (props) => (state, actions) => (
   <StageSvg>
-    <rect x="300" y="200" width="300" height="100" fill="red" />
+    {state.elements.map(({ type:Component, ...props }) => (
+      <Component { ...props } />
+    ))}
   </StageSvg>
 )
 
