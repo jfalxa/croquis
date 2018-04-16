@@ -13,7 +13,7 @@ const SvgContainer = styled('svg')({
 
 
 const Tool = (props, children) => {
-
+console.log( children )
   return (
     <SvgContainer
       oncreate={props.initMouse}

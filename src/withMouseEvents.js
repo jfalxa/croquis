@@ -13,7 +13,7 @@ const getMouseData = (e, initialPosition) => {
 }
 
 
-const withMouseEvents = (Component) => (props) => {
+const withMouseEvents = (Component) => (props, children) => {
 
   let initialPosition = null
 
@@ -57,7 +57,9 @@ const withMouseEvents = (Component) => (props) => {
       {...props}
       initMouse={initListeners}
       destroyMouse={stopListening}
-    />
+    >
+      {children}
+    </Component>
   )
 }
 

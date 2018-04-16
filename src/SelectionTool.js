@@ -38,18 +38,25 @@ const SelectionTool = (props) => (state, actions) => {
 
   const selectElementsInArea = ({ e, initialPosition, delta }) => {
     const area = rectangle(initialPosition, delta)
+
     const found = state.elements
       .filter(element => overlaps(area, element))
       .map(element => element.id)
 
+    actions.tools.set({ area })
     actions.selectElements({ elements: found })
   }
+
+
+  const { area } = state.tools
 
   return (
     <Tool
       onMouseDown={selectElement}
       onMouseDrag={selectElementsInArea}
+      onMouseUp={() => actions.tools.set({ area: null })}
     >
+      <rect {...area} fill="none" stroke="blue" />
     </Tool>
   )
 }
