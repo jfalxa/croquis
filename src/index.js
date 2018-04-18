@@ -50,7 +50,7 @@ const actions = {
 const view = (state, actions) => (
   <Root>
     <Stage />
-    <PathTool />
+    <SelectionTool />
 
     <Topbar />
 

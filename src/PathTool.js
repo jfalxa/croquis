@@ -16,7 +16,7 @@ const PathTool = (props) => (state, actions) => {
   const createPath = (e) => {
     e.stopPropagation()
     const { path } = actions.getState().tools
-    actions.createElement({ path, closed: true })
+    actions.createElement({ type: 'path', path, closed: true })
     actions.tools.set({ path: [] })
   }
 

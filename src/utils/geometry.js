@@ -5,26 +5,41 @@ export const rectangle = ([x, y], [width, height]) => ({
   height: Math.abs(height)
 })
 
-export const bounds = (...elements) => {
-  const bounds = elements.reduce((bounds, element) => ({
-    x1: Math.min(bounds.x1, element.x),
-    y1: Math.min(bounds.y1, element.y),
-    x2: Math.max(bounds.x2, element.x + element.width),
-    y2: Math.max(bounds.y2, element.y + element.height)
-  }), {
-    x1: Infinity,
-    y1: Infinity,
-    x2: -Infinity,
-    y2: -Infinity
-  })
 
-  return {
-    x: bounds.x1,
-    y: bounds.y1,
-    width: bounds.x2 - bounds.x1,
-    height: bounds.y2 - bounds.y1
-  }
+export const pathBounds = (points) => {
+  const xs = points.map(p => p[0])
+  const ys = points.map(p => p[1])
+
+  const x = Math.min(...xs)
+  const y = Math.min(...ys)
+  const width = Math.max(...xs) - x
+  const height = Math.max(...ys) - y
+
+  return { x, y, width, height }
 }
+
+export const normalizeBounds = (element) => {
+  return (element.path)
+    ? pathBounds(element.path)
+    : element
+}
+
+export const bounds = (...elements) => {
+  const elementBounds = elements.map(normalizeBounds)
+
+  const x1s = elementBounds.map(bounds => bounds.x)
+  const y1s = elementBounds.map(bounds => bounds.y)
+  const x2s = elementBounds.map(bounds => bounds.x + bounds.width)
+  const y2s = elementBounds.map(bounds => bounds.y + bounds.height)
+
+  const x = Math.min(...x1s)
+  const y = Math.min(...y1s)
+  const width = Math.max(...x2s) - x
+  const height = Math.max(...y2s) - y
+
+  return { x, y, width, height }
+}
+
 
 export const contains = ([x, y], r) => (
   (r.x <= x && x <= r.x + r.width)

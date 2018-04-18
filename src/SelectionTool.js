@@ -2,7 +2,7 @@ import { h } from 'hyperapp'
 import last from 'lodash/last'
 import styled from './styled'
 import Tool from './Tool'
-import { rectangle, bounds, contains, overlaps } from './utils/geometry'
+import { rectangle, normalizeBounds, bounds, contains, overlaps } from './utils/geometry'
 
 
 const SelectionTool = (props) => (state, actions) => {
@@ -17,7 +17,7 @@ const SelectionTool = (props) => (state, actions) => {
 
   const selectElement = ({ e, position }) => {
     const found = actions.getState().elements
-      .filter(element => contains(position, element))
+      .filter(element => contains(position, normalizeBounds(element)))
       .map(element => element.id)
 
     // when user clicks, select only the element closer to them
@@ -31,7 +31,7 @@ const SelectionTool = (props) => (state, actions) => {
     const area = rectangle(initialPosition, delta)
 
     const found = actions.getState().elements
-      .filter(element => overlaps(area, element))
+      .filter(element => overlaps(area, normalizeBounds(element)))
       .map(element => element.id)
 
     actions.tools.set({ area })
@@ -49,6 +49,7 @@ const SelectionTool = (props) => (state, actions) => {
       onMouseDrag={selectElementsInArea}
       onMouseUp={endSelection}
     >
+
       {hasArea && <rect {...area} fill="none" stroke="blue" />}
 
       {hasSelection && <rect {...selectionArea} fill="none" stroke="blue" />}
