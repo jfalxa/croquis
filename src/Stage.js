@@ -1,5 +1,6 @@
 import { h } from 'hyperapp'
 import styled from './styled'
+import { svgPath } from './utils/svg'
 
 
 const StageSvg = styled('svg')({
@@ -11,10 +12,30 @@ const StageSvg = styled('svg')({
 })
 
 
+
+const Element = ({ id, type, path, closed, ...props }) => {
+  switch(type) {
+    case 'rect':
+      return <rect {...props} />
+    default:
+      return (
+        <path
+          d={svgPath(path, closed)}
+          fill="none"
+          stroke="black"
+          stroke-width="3"
+          {...props}
+        />
+      )
+
+  }
+}
+
+
 const Stage = (props) => (state, actions) => (
   <StageSvg>
-    {state.elements.map(({ type:Component, ...props }) => (
-      <Component { ...props } />
+    {state.elements.map(element => (
+      <Element { ...element } />
     ))}
   </StageSvg>
 )

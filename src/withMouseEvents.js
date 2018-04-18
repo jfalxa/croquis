@@ -49,7 +49,7 @@ const withMouseEvents = (Component) => (props, children) => {
 
   const stopListening = (element) => {
     element.removeEventListener('mousedown', onMouseDown)
-    document.removeEventListener('mousemove', onMouseMove)
+    props.onMouseMove && document.removeEventListener('mousemove', onMouseMove)
   }
 
 
