@@ -16,7 +16,7 @@ const SelectionTool = (props) => (state, actions) => {
 
 
   const selectElement = ({ e, position }) => {
-    const found = elements
+    const found = actions.getState().elements
       .filter(element => contains(position, element))
       .map(element => element.id)
 
@@ -30,7 +30,7 @@ const SelectionTool = (props) => (state, actions) => {
   const selectElementsInArea = ({ e, initialPosition, delta }) => {
     const area = rectangle(initialPosition, delta)
 
-    const found = elements
+    const found = actions.getState().elements
       .filter(element => overlaps(area, element))
       .map(element => element.id)
 

@@ -21,6 +21,8 @@ const state = {
 }
 
 const actions = {
+  getState: () => state => state,
+
   selectElements: ({ elements, add }) => ({ selection }) => ({
     selection: add ? xor(selection, elements) : elements
   }),
