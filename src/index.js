@@ -49,8 +49,9 @@ const actions = {
 
 const view = (state, actions) => (
   <Root>
-    <Stage />
-    <SelectionTool />
+    <Stage>
+      <SelectionTool />
+    </Stage>
 
     <Topbar />
 

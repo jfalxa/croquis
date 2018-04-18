@@ -42,13 +42,13 @@ const withMouseEvents = (Component) => (props, children) => {
     props.onMouseDown && props.onMouseDown(getMouseData(e, initialPosition))
   }
 
-  const initListeners = (element) => {
-    element.addEventListener('mousedown', onMouseDown)
+  const initListeners = (target) => {
+    target.addEventListener('mousedown', onMouseDown)
     props.onMouseMove && document.addEventListener('mousemove', onMouseMove)
   }
 
-  const stopListening = (element) => {
-    element.removeEventListener('mousedown', onMouseDown)
+  const stopListening = (target) => {
+    target.removeEventListener('mousedown', onMouseDown)
     props.onMouseMove && document.removeEventListener('mousemove', onMouseMove)
   }
 

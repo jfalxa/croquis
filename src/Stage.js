@@ -32,11 +32,15 @@ const Element = ({ id, type, path, closed, ...props }) => {
 }
 
 
-const Stage = (props) => (state, actions) => (
+const Stage = (props, children) => (state, actions) => (
   <StageSvg>
-    {state.elements.map(element => (
-      <Element { ...element } />
-    ))}
+    <g>
+      {state.elements.map(element => (
+        <Element { ...element } />
+      ))}
+    </g>
+
+    {children}
   </StageSvg>
 )
 
