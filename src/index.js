@@ -19,7 +19,7 @@ const state = {
     { id: 0, type: 'rect', x: 300, y: 200, width: 300, height: 150, fill: 'red' },
     { id: 1, type: 'rect', x: 400, y: 300, width: 300, height: 100, fill: 'green' },
     { id: 2, type: 'path', path: [ [500, 100], [1100, 200], [200, 700] ] },
-    { id: 3, type: 'path', path: [ [100, 100], [200, 200] ], closed: true, stroke: 'red' }
+    { id: 3, type: 'path', path: [ [100, 100], [200, 200], [0, 200] ], closed: true, stroke: 'red' }
   ]
 }
 

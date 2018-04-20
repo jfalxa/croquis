@@ -8,10 +8,18 @@ const LayersContainer = styled('div')({
   border: '1px solid black'
 })
 
+const Layer = styled('span')(props => ({
+  fontWeight: props.selected ? 'bold' : 'normal'
+}))
 
-const Layers = (props) => (
+
+const Layers = (props) => (state, actions) => (
   <LayersContainer>
-    <span>Rectangle 1</span>
+    {state.elements.map(element => (
+      <Layer selected={state.selection.includes(element.id)}>
+        {element.type} {element.id}
+      </Layer>
+    ))}
   </LayersContainer>
 )
 
