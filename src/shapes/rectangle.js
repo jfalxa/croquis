@@ -1,5 +1,7 @@
 import { h } from 'hyperapp'
 import { Shapes } from 'kld-intersections'
+import { transformPoints } from './index'
+import { bbox } from '../utils/geometry'
 
 
 export const type = 'Rectangle'
@@ -11,16 +13,20 @@ export function create({ x, y, width, height, ...props }) {
 }
 
 
-export function render({ shape, style }) {
-  const { x:x1, y:y1 } = shape.args[0]
-  const { x:x2, y:y2 } = shape.args[1]
+export function transform(points, transformation) {
+  const [a, b] = transformPoints(points, transformation)
 
+  const min = a.min(b)
+  const max = a.max(b)
+
+  return [min, max]
+}
+
+
+export function render({ shape, style }) {
   return (
     <rect
-      x={x1}
-      y={y1}
-      width={x2 - x1}
-      height={y2 - y1}
+      {...bbox(shape)}
       {...style}
     />
   )

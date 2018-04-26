@@ -16,23 +16,7 @@ const withMouseEvents = (Component) => (props, children) => {
 
   let initialPosition = null
 
-  const onMouseMove = (e) => {
-    props.onMouseMove && props.onMouseMove(getMouseData(e, initialPosition))
-  }
-
-  const onMouseDrag = (e) => {
-    props.onMouseDrag && props.onMouseDrag(getMouseData(e, initialPosition))
-  }
-
-  const onMouseUp = (e) => {
-    document.removeEventListener('mousemove', onMouseDrag)
-    document.removeEventListener('mouseup', onMouseUp)
-
-    props.onMouseUp && props.onMouseUp(getMouseData(e, initialPosition))
-    initialPosition = null
-  }
-
-  const onMouseDown = (e) => {
+  function onMouseDown(e) {
     initialPosition = new Point2D(e.pageX, e.pageY)
 
     document.addEventListener('mousemove', onMouseDrag)
@@ -41,12 +25,29 @@ const withMouseEvents = (Component) => (props, children) => {
     props.onMouseDown && props.onMouseDown(getMouseData(e, initialPosition))
   }
 
-  const initListeners = (target) => {
+  function onMouseMove(e) {
+    props.onMouseMove && props.onMouseMove(getMouseData(e, initialPosition))
+  }
+
+  function onMouseDrag(e) {
+    props.onMouseDrag && props.onMouseDrag(getMouseData(e, initialPosition))
+  }
+
+  function onMouseUp(e) {
+    document.removeEventListener('mousemove', onMouseDrag)
+    document.removeEventListener('mouseup', onMouseUp)
+
+    props.onMouseUp && props.onMouseUp(getMouseData(e, initialPosition))
+
+    initialPosition = null
+  }
+
+  function initListeners(target) {
     target.addEventListener('mousedown', onMouseDown)
     props.onMouseMove && document.addEventListener('mousemove', onMouseMove)
   }
 
-  const stopListening = (target) => {
+  function stopListening(target) {
     target.removeEventListener('mousedown', onMouseDown)
     props.onMouseMove && document.removeEventListener('mousemove', onMouseMove)
   }
@@ -57,6 +58,8 @@ const withMouseEvents = (Component) => (props, children) => {
       {...props}
       initMouse={initListeners}
       destroyMouse={stopListening}
+      startDragging={onMouseDown}
+      stopDragging={onMouseUp}
     >
       {children}
     </Component>

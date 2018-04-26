@@ -14,6 +14,8 @@ const InspectorContainer = styled('div')({
 
 const Inspector = (props) => (state, actions) => {
 
+  const elements = state.elements.filter(element => state.selection.includes(element.id))
+
   function getBbox(e) {
     const bound = e.target.name
     const value = parseInt(e.target.value || 0, 10)
@@ -29,7 +31,7 @@ const Inspector = (props) => (state, actions) => {
 
     const translation = Matrix2D.translation(tx, ty)
 
-    actions.transformElements({ transformation: translation })
+    actions.transformElements({ elements, transformation: translation })
   }
 
   function handleScaling(e) {
@@ -41,16 +43,11 @@ const Inspector = (props) => (state, actions) => {
 
     const scaling = Matrix2D.nonUniformScalingAt(sx, sy, anchor)
 
-    actions.transformElements({ transformation: scaling })
+    actions.transformElements({ elements, transformation: scaling })
   }
 
 
-  const { selection, elements } = state
-
-  const selectionBboxes = elements
-    .filter(element => selection.includes(element.id))
-    .map(element => bbox(element.shape))
-
+  const selectionBboxes = elements.map(element => bbox(element.shape))
   const selectionBbox = joinBboxes(...selectionBboxes)
 
 

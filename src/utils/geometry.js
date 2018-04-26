@@ -44,3 +44,17 @@ export function joinBboxes(...bboxes) {
   return { x, y, width, height }
 }
 
+export function center(box) {
+  const x = box.x + box.width/2
+  const y = box.y + box.height/2
+
+  return { x, y }
+}
+
+export function reflection(point, center) {
+  const x = 2*center.x - point.x
+  const y = 2*center.y - point.y
+
+  return { x, y }
+}
+

@@ -3,6 +3,7 @@ import last from 'lodash/last'
 import { Shapes } from 'kld-intersections'
 import styled from './styled'
 import Tool from './Tool'
+import TransformControls from './TransformControls'
 import { rectangle, isPointIn, isIntersecting, bbox, joinBboxes } from './utils/geometry'
 
 
@@ -16,7 +17,6 @@ const SelectionTool = (props) => (state, actions) => {
     const found = getElements()
       .find(element => isPointIn(position, element.shape))
 
-    // when user clicks, select only the element closer to them
     actions.selectElements({
       elements: found ? [found.id] : [],
       add: e.shiftKey
@@ -39,15 +39,13 @@ const SelectionTool = (props) => (state, actions) => {
   }
 
 
-  const { selection, elements, tools: { area } } = state
+  const { elements, selection, tools: { area } } = state
+  const selectionElements = elements.filter(element => selection.includes(element.id))
 
   const hasArea = Boolean(area)
-  const hasSelection = (selection.length > 0)
+  const hasSelection = (selectionElements.length > 0)
 
-  const selectionBboxes = elements
-    .filter(element => selection.includes(element.id))
-    .map(element => bbox(element.shape))
-
+  const selectionBboxes = selectionElements.map(element => bbox(element.shape))
   const selectionBbox = joinBboxes(...selectionBboxes)
 
   return (
@@ -58,11 +56,11 @@ const SelectionTool = (props) => (state, actions) => {
     >
       {hasArea && <rect {...area} fill="none" stroke="blue" />}
 
-      {hasSelection && <rect {...selectionBbox} fill="none" stroke="blue" />}
-
       {selectionBboxes.map(bbox => (
         <rect {...bbox} fill="none" stroke="blue" />
       ))}
+
+      {hasSelection && <TransformControls box={selectionBbox} />}
     </Tool>
   )
 }

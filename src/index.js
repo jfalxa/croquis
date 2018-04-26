@@ -35,13 +35,22 @@ const actions = {
     selection: add ? xor(selection, elements) : elements
   }),
 
-  transformElements: ({ transformation }) => (state) => ({
-    elements: state.elements.map(element => (
-      state.selection.includes(element.id)
-        ? transform(element, transformation)
+  updateElements: ({ elements }) => (state) => ({
+    elements: state.elements.map(element => {
+      const update = elements.find(({ id }) => (id === element.id))
+
+      return update
+        ? { ...element, ...update }
         : element
-    ))
+    })
   }),
+
+  transformElements: ({ elements, transformation }) => (state, actions) => (
+    actions.updateElements({
+      elements: elements.map(element => transform(element, transformation))
+    })
+  ),
+
 
   tools: {
     set: props => props

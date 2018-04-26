@@ -6,9 +6,18 @@ import * as Rectangle from './rectangle'
 export const shapes = { Rectangle }
 
 
+export function transformPoints(points, transformation) {
+  return points.map(point => point.transform(transformation))
+}
+
 export function transform(element, transformation) {
-  const transformed = element.shape.args.map(point => point.transform(transformation))
-  const shape = new IntersectionArgs(element.shape.name, transformed)
+  const shapeTransform = shapes[element.type].transform
+
+  const points = shapeTransform
+    ? shapeTransform(element.shape.args, transformation)
+    : transformPoints(element.shape.args, transformation)
+
+  const shape = new IntersectionArgs(element.shape.name, points)
 
   return { ...element, shape }
 }
