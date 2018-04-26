@@ -3,12 +3,15 @@ import xor from 'lodash/xor'
 import Root from './Root'
 import Stage from './Stage'
 import SelectionTool from './SelectionTool'
-import PathTool from './PathTool'
+import RectangleTool from './RectangleTool'
 import Topbar from './Topbar'
 import Toolbar from './Toolbar'
 import Layers from './Layers'
 import Inspector from './Inspector'
 
+import * as Rectangle from './shapes/rectangle'
+
+let id = 2
 
 const state = {
   selection: [],
@@ -16,30 +19,21 @@ const state = {
   tools: {},
 
   elements: [
-    { id: 0, type: 'rect', x: 300, y: 200, width: 300, height: 150, fill: 'red' },
-    { id: 1, type: 'rect', x: 400, y: 300, width: 300, height: 100, fill: 'green' },
-    { id: 2, type: 'path', path: [ [500, 100], [1100, 200], [200, 700] ] },
-    { id: 3, type: 'path', path: [ [100, 100], [200, 200], [0, 200] ], closed: true, stroke: 'red' }
+    Rectangle.create({ id: 0, x: 200, y: 300, width: 400, height: 100 }),
+    Rectangle.create({ id: 1, x: 300, y: 100, width: 100, height: 150 }),
   ]
 }
 
 const actions = {
   getState: () => state => state,
 
-  createElement: (element) => ({ elements }) => ({ elements: [...elements, element] }),
+  createElement: (element) => ({ elements }) => ({ elements: [...elements, { ...element, id: id++ }] }),
 
   selectElements: ({ elements, add }) => ({ selection }) => ({
     selection: add ? xor(selection, elements) : elements
   }),
 
-  transformElements: ({ ids, transform }) => (state) => ({
-    elements: state.elements.reduce((elements, element) => ([
-      ...elements,
-      ids.includes(element.id)
-        ? transform(element)
-        : element
-    ]), [])
-  }),
+  transformElements: ({ ids, transform }) => (state) => (state),
 
   tools: {
     set: props => props

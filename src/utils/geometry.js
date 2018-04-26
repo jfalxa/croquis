@@ -1,14 +1,26 @@
-export const rectangle = ([x, y], [width, height]) => ({
-  x: Math.min(x, x+width),
-  y: Math.min(y, y+height),
-  width: Math.abs(width),
-  height: Math.abs(height)
-})
+import { Intersection, IntersectionQuery } from 'kld-intersections'
 
 
-export const pathBounds = (points) => {
-  const xs = points.map(p => p[0])
-  const ys = points.map(p => p[1])
+export function isPointIn(point, shape) {
+  return IntersectionQuery['pointIn' + shape.name](point, ...shape.args)
+}
+
+export function isInside(a, b) {
+  const container = bbox(a)
+  const element = bbox(b)
+
+  return element.x >= container.x && element.width <= container.width
+    && element.y >= container.y && element.height <= container.height
+}
+
+export function isIntersecting(a, b) {
+  return Intersection.intersect(a, b).points.length > 0
+    || isInside(a, b)
+}
+
+export function bbox(shape) {
+  const xs = shape.args.map(({ x }) => x)
+  const ys = shape.args.map(({ y }) => y)
 
   const x = Math.min(...xs)
   const y = Math.min(...ys)
@@ -18,19 +30,11 @@ export const pathBounds = (points) => {
   return { x, y, width, height }
 }
 
-export const normalizeBounds = (element) => {
-  return (element.path)
-    ? pathBounds(element.path)
-    : element
-}
-
-export const bounds = (...elements) => {
-  const elementBounds = elements.map(normalizeBounds)
-
-  const x1s = elementBounds.map(bounds => bounds.x)
-  const y1s = elementBounds.map(bounds => bounds.y)
-  const x2s = elementBounds.map(bounds => bounds.x + bounds.width)
-  const y2s = elementBounds.map(bounds => bounds.y + bounds.height)
+export function joinBboxes(...bboxes) {
+  const x1s = bboxes.map(bounds => bounds.x)
+  const y1s = bboxes.map(bounds => bounds.y)
+  const x2s = bboxes.map(bounds => bounds.x + bounds.width)
+  const y2s = bboxes.map(bounds => bounds.y + bounds.height)
 
   const x = Math.min(...x1s)
   const y = Math.min(...y1s)
@@ -39,34 +43,4 @@ export const bounds = (...elements) => {
 
   return { x, y, width, height }
 }
-
-
-export const contains = ([x, y], r) => (
-  (r.x <= x && x <= r.x + r.width)
-  && (r.y <= y && y <= r.y + r.height)
-)
-
-export const overlaps = (a, b) => (
-  (a.x < b.x + b.width) && (a.x + a.width > b.x)
-  && (a.y < b.y + b.height) && (a.y + a.height > b.y)
-)
-
-export const translate = (element, translation) => ({
-  ...element,
-  x: element.x + translation[0],
-  y: element.y + translation[1]
-})
-
-export const scale = (element, scaling, center) => ({
-  ...element,
-  x: scaling[0] * ( element.x - center.x ) + center.x,
-  y: scaling[1] * ( element.y - center.y ) + center.y,
-  width: element.width * scaling[0],
-  height: element.height * scaling[1]
-})
-
-export const center = (r) => ({
-  x: r.x + r.width/2,
-  y: r.y + r.height/2
-})
 

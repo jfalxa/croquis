@@ -13,7 +13,10 @@
   },
   "dependencies": {
     "hyperapp": "^1.2.5",
-    "lodash": "^4.17.5",
-    "picostyle": "^1.0.2"
+    "kld-affine": "^2.0.4",
+    "kld-intersections": "^0.4.1",
+    "lodash": "^4.17.10",
+    "picostyle": "^1.0.2",
+    "rectangle": "^0.2.0"
   }
 }

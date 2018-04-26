@@ -1,6 +1,6 @@
 import { h } from 'hyperapp'
 import styled from './styled'
-import { bounds, center, scale, translate } from './utils/geometry'
+import { bbox, joinBboxes } from './utils/geometry'
 
 
 const InspectorContainer = styled('div')({
@@ -12,35 +12,28 @@ const InspectorContainer = styled('div')({
 
 
 const Inspector = (props) => (state, actions) => {
+
+  function handleChange(e) {
+    const change = { [e.target.name]: parseInt(e.target.value, 10) }
+  }
+
+
   const { selection, elements } = state
 
-  const selectionElements = selection.map(elementID => elements[elementID])
-  const selectionArea = bounds(...selectionElements)
+  const selectionBboxes = elements
+    .filter(element => selection.includes(element.id))
+    .map(element => bbox(element.shape))
 
-
-  const handleChange = (e) => {
-    const newBounds = {
-      ...selectionArea,
-      [e.target.name]: parseInt(e.target.value, 10)
-    }
-
-    const translation = [newBounds.x - selectionArea.x, newBounds.y - selectionArea.y]
-    const scaling = [newBounds.width / selectionArea.width, newBounds.height / selectionArea.height]
-
-    actions.transformElements({
-      ids: selection,
-      transform: element => scale(translate(element, translation), scaling, selectionArea)
-    })
-  }
+  const selectionBbox = joinBboxes(...selectionBboxes)
 
 
   return (
     <InspectorContainer>
       <form onchange={handleChange} style={{ flexDirection: 'column' }}>
-        <input placeholder="x" name="x" value={selectionArea.x} />
-        <input placeholder="y" name="y" value={selectionArea.y} />
-        <input placeholder="width" name="width" value={selectionArea.width} />
-        <input placeholder="height" name="height" value={selectionArea.height} />
+        <input placeholder="x" name="x" value={selectionBbox.x} />
+        <input placeholder="y" name="y" value={selectionBbox.y} />
+        <input placeholder="width" name="width" value={selectionBbox.width} />
+        <input placeholder="height" name="height" value={selectionBbox.height} />
       </form>
     </InspectorContainer>
   )

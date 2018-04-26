@@ -1,15 +1,14 @@
 import { h } from 'hyperapp'
+import { Point2D } from 'kld-affine'
 import styled from './styled'
+import { bbox } from './utils/geometry'
 
 
 const getMouseData = (e, initialPosition) => {
-  const position = [e.pageX, e.pageY]
+  const position = new Point2D(e.pageX, e.pageY)
+  const area = bbox({ args: [initialPosition, position] })
 
-  const delta = initialPosition
-    ? [ position[0] - initialPosition[0], position[1] - initialPosition[1] ]
-    : null
-
-  return { initialPosition, position, delta, e }
+  return { e, initialPosition, position, area }
 }
 
 
@@ -34,7 +33,7 @@ const withMouseEvents = (Component) => (props, children) => {
   }
 
   const onMouseDown = (e) => {
-    initialPosition = [e.pageX, e.pageY]
+    initialPosition = new Point2D(e.pageX, e.pageY)
 
     document.addEventListener('mousemove', onMouseDrag)
     document.addEventListener('mouseup', onMouseUp)

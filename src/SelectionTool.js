@@ -1,47 +1,54 @@
 import { h } from 'hyperapp'
 import last from 'lodash/last'
+import { Shapes } from 'kld-intersections'
 import styled from './styled'
 import Tool from './Tool'
-import { rectangle, normalizeBounds, bounds, contains, overlaps } from './utils/geometry'
+import { rectangle, isPointIn, isIntersecting, bbox, joinBboxes } from './utils/geometry'
 
 
 const SelectionTool = (props) => (state, actions) => {
 
-  const { selection, elements, tools: { area } } = state
-  const selectionElements = selection.map(elementID => elements[elementID])
-  const selectionArea = bounds(...selectionElements)
+  function getElements() {
+    return actions.getState().elements.slice().reverse()
+  }
 
-  const hasArea = Boolean(area)
-  const hasSelection = (selection.length > 0)
-
-
-  const selectElement = ({ e, position }) => {
-    const found = actions.getState().elements
-      .filter(element => contains(position, normalizeBounds(element)))
-      .map(element => element.id)
+  function selectElement({ e, position }) {
+    const found = getElements()
+      .find(element => isPointIn(position, element.shape))
 
     // when user clicks, select only the element closer to them
     actions.selectElements({
-      elements: found.slice(-1),
+      elements: found ? [found.id] : [],
       add: e.shiftKey
     })
   }
 
-  const selectElementsInArea = ({ e, initialPosition, delta }) => {
-    const area = rectangle(initialPosition, delta)
+  function selectElementsInArea({ area } ) {
+    const areaRect = Shapes.rectangle(area.x, area.y, area.width, area.height)
 
-    const found = actions.getState().elements
-      .filter(element => overlaps(area, normalizeBounds(element)))
+    const found = getElements()
+      .filter(element => isIntersecting(areaRect, element.shape))
       .map(element => element.id)
 
-    actions.tools.set({ area })
     actions.selectElements({ elements: found })
+    actions.tools.set({ area })
   }
 
-  const endSelection = () => {
+  function endSelection() {
     actions.tools.set({ area: null })
   }
 
+
+  const { selection, elements, tools: { area } } = state
+
+  const hasArea = Boolean(area)
+  const hasSelection = (selection.length > 0)
+
+  const selectionBboxes = elements
+    .filter(element => selection.includes(element.id))
+    .map(element => bbox(element.shape))
+
+  const selectionBbox = joinBboxes(...selectionBboxes)
 
   return (
     <Tool
@@ -49,13 +56,12 @@ const SelectionTool = (props) => (state, actions) => {
       onMouseDrag={selectElementsInArea}
       onMouseUp={endSelection}
     >
-
       {hasArea && <rect {...area} fill="none" stroke="blue" />}
 
-      {hasSelection && <rect {...selectionArea} fill="none" stroke="blue" />}
+      {hasSelection && <rect {...selectionBbox} fill="none" stroke="blue" />}
 
-      {selectionElements.map(element => (
-        <rect {...element} fill="none" stroke="blue" />
+      {selectionBboxes.map(bbox => (
+        <rect {...bbox} fill="none" stroke="blue" />
       ))}
     </Tool>
   )
