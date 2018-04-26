@@ -9,7 +9,8 @@ import Toolbar from './Toolbar'
 import Layers from './Layers'
 import Inspector from './Inspector'
 
-import * as Rectangle from './shapes/rectangle'
+import { shapes, transform } from './shapes'
+
 
 let id = 2
 
@@ -19,10 +20,11 @@ const state = {
   tools: {},
 
   elements: [
-    Rectangle.create({ id: 0, x: 200, y: 300, width: 400, height: 100 }),
-    Rectangle.create({ id: 1, x: 300, y: 100, width: 100, height: 150 }),
+    shapes.Rectangle.create({ id: 0, x: 200, y: 300, width: 400, height: 100 }),
+    shapes.Rectangle.create({ id: 1, x: 300, y: 100, width: 100, height: 150 }),
   ]
 }
+
 
 const actions = {
   getState: () => state => state,
@@ -33,7 +35,13 @@ const actions = {
     selection: add ? xor(selection, elements) : elements
   }),
 
-  transformElements: ({ ids, transform }) => (state) => (state),
+  transformElements: ({ transformation }) => (state) => ({
+    elements: state.elements.map(element => (
+      state.selection.includes(element.id)
+        ? transform(element, transformation)
+        : element
+    ))
+  }),
 
   tools: {
     set: props => props

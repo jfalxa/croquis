@@ -1,5 +1,6 @@
 import { h } from 'hyperapp'
 import styled from './styled'
+import { Point2D, Matrix2D } from 'kld-affine'
 import { bbox, joinBboxes } from './utils/geometry'
 
 
@@ -13,8 +14,34 @@ const InspectorContainer = styled('div')({
 
 const Inspector = (props) => (state, actions) => {
 
-  function handleChange(e) {
-    const change = { [e.target.name]: parseInt(e.target.value, 10) }
+  function getBbox(e) {
+    const bound = e.target.name
+    const value = parseInt(e.target.value || 0, 10)
+
+    return { ...selectionBbox, [bound]: value }
+  }
+
+  function handleTranslation(e) {
+    const bbox = getBbox(e)
+
+    const tx = bbox.x - selectionBbox.x
+    const ty = bbox.y - selectionBbox.y
+
+    const translation = Matrix2D.translation(tx, ty)
+
+    actions.transformElements({ transformation: translation })
+  }
+
+  function handleScaling(e) {
+    const bbox = getBbox(e)
+    const anchor = new Point2D(selectionBbox.x, selectionBbox.y)
+
+    const sx = bbox.width / selectionBbox.width
+    const sy = bbox.height / selectionBbox.height
+
+    const scaling = Matrix2D.nonUniformScalingAt(sx, sy, anchor)
+
+    actions.transformElements({ transformation: scaling })
   }
 
 
@@ -29,12 +56,33 @@ const Inspector = (props) => (state, actions) => {
 
   return (
     <InspectorContainer>
-      <form onchange={handleChange} style={{ flexDirection: 'column' }}>
-        <input placeholder="x" name="x" value={selectionBbox.x} />
-        <input placeholder="y" name="y" value={selectionBbox.y} />
-        <input placeholder="width" name="width" value={selectionBbox.width} />
-        <input placeholder="height" name="height" value={selectionBbox.height} />
-      </form>
+      <input
+        placeholder="x"
+        name="x"
+        value={selectionBbox.x}
+        onchange={handleTranslation}
+      />
+
+      <input
+        placeholder="y"
+        name="y"
+        value={selectionBbox.y}
+        onchange={handleTranslation}
+      />
+
+      <input
+        placeholder="width"
+        name="width"
+        value={selectionBbox.width}
+        onchange={handleScaling}
+      />
+
+      <input
+        placeholder="height"
+        name="height"
+        value={selectionBbox.height}
+        onchange={handleScaling}
+      />
     </InspectorContainer>
   )
 }
