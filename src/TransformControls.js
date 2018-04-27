@@ -14,14 +14,31 @@ const Grip = withMouseEvents(({ position, startDragging }) => (
   />
 ))
 
+const Body = withMouseEvents(({ box, startDragging }) => (
+  <rect
+    {...box}
+    fill="rgba(255, 0, 0, 0.2)"
+    stroke="red"
+    onmousedown={startDragging}
+  />
+))
+
 
 const TransformControls = ({ box }) => (state, actions) => {
   let elements = null
 
 
-  function startScaling({ e }) {
+  function startTransformation({ e }) {
     e.stopPropagation()
     elements = state.elements.filter(element => state.selection.includes(element.id))
+  }
+
+  function translation({ initialPosition, position }) {
+    const { x:tx, y:ty } = position.subtract(initialPosition)
+
+    const translation = Matrix2D.translation(tx, ty)
+
+    actions.transformElements({ elements, transformation: translation })
   }
 
   function scaling(gripPosition, axis) {
@@ -54,13 +71,17 @@ const TransformControls = ({ box }) => (state, actions) => {
 
   return (
     <g>
-      <rect {...box} fill="none" stroke="red" />
+      <Body
+        box={box}
+        onMouseDown={startTransformation}
+        onMouseDrag={translation}
+      />
 
       {corners.map(([x, y]) => ({ x, y })).map((position, i) => (
         <Grip
           key={i}
           position={position}
-          onMouseDown={startScaling}
+          onMouseDown={startTransformation}
           onMouseDrag={scaling(position)}
         />
       ))}
@@ -69,7 +90,7 @@ const TransformControls = ({ box }) => (state, actions) => {
         <Grip
           key={i}
           position={position}
-          onMouseDown={startScaling}
+          onMouseDown={startTransformation}
           onMouseDrag={scaling(position, i%2===1 ? 'x' : 'y')}
         />
       ))}
