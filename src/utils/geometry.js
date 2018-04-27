@@ -9,13 +9,14 @@ export function isInside(a, b) {
   const container = bbox(a)
   const element = bbox(b)
 
-  return element.x >= container.x && element.width <= container.width
-    && element.y >= container.y && element.height <= container.height
+  return element.x > container.x
+    && element.x + element.width < container.x + container.width
+    && element.y > container.y
+    && element.y + element.height < container.y + container.height
 }
 
 export function isIntersecting(a, b) {
-  return Intersection.intersect(a, b).points.length > 0
-    || isInside(a, b)
+  return isInside(a, b) || Intersection.intersect(a, b).points.length > 0
 }
 
 export function bbox(shape) {
