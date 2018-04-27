@@ -2,7 +2,7 @@ import { h } from 'hyperapp'
 import withMouseEvents from '../utils/withMouseEvents'
 
 
-const Tool = ({ name, startDragging }, children) => (
+const Tool = withMouseEvents(({ name, startDragging }, children) => (
   <g onmousedown={startDragging}>
     <rect
       fill="transparent"
@@ -11,7 +11,7 @@ const Tool = ({ name, startDragging }, children) => (
 
     {children}
   </g>
-)
+))
 
 
-export default withMouseEvents(Tool)
+export default Tool

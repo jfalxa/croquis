@@ -1,6 +1,6 @@
 import { h } from 'hyperapp'
 import { Shapes } from 'kld-intersections'
-import { transformPoints } from './index'
+import { baseTransform } from './index'
 import { bbox } from '../utils/geometry'
 
 
@@ -14,7 +14,7 @@ export function create({ x, y, width, height, ...props }) {
 
 
 export function transform(points, transformation) {
-  const [a, b] = transformPoints(points, transformation)
+  const [a, b] = baseTransform(points, transformation)
 
   const min = a.min(b)
   const max = a.max(b)

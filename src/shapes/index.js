@@ -7,7 +7,7 @@ import * as Rectangle from './rectangle'
 export const shapes = { Rectangle }
 
 
-export function transformPoints(points, transformation) {
+export function baseTransform(points, transformation) {
   return points.map(point => point.transform(transformation))
     .map(({ x, y }) => new Point2D(Math.round(x), Math.round(y)))
 }
@@ -17,7 +17,7 @@ export function transform(element, transformation) {
 
   const points = shapeTransform
     ? shapeTransform(element.shape.args, transformation)
-    : transformPoints(element.shape.args, transformation)
+    : baseTransform(element.shape.args, transformation)
 
   const shape = new IntersectionArgs(element.shape.name, points)
 
