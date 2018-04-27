@@ -16,7 +16,10 @@ const Layer = styled('span')(props => ({
 const Layers = (props) => (state, actions) => (
   <LayersContainer>
     {state.elements.map(element => (
-      <Layer selected={state.selection.includes(element.id)}>
+      <Layer
+        selected={state.selection.includes(element.id)}
+        onclick={e => actions.selectElements({ elements: [element.id], add: e.shiftKey })}
+      >
         {element.type} {element.id}
       </Layer>
     ))}
