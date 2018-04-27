@@ -1,4 +1,5 @@
 import { h } from 'hyperapp'
+import { Point2D } from 'kld-affine'
 import { IntersectionArgs } from 'kld-intersections'
 import * as Rectangle from './rectangle'
 
@@ -8,6 +9,7 @@ export const shapes = { Rectangle }
 
 export function transformPoints(points, transformation) {
   return points.map(point => point.transform(transformation))
+    .map(({ x, y }) => new Point2D(Math.round(x), Math.round(y)))
 }
 
 export function transform(element, transformation) {
