@@ -17,12 +17,14 @@ const RectangleTool = (props) => (state, actions) => {
   }
 
 
+  const { area } = state.tools
+
   return (
     <Tool
       onMouseDrag={drawRectangle}
       onMouseUp={addRectangle}
     >
-      <rect {...state.tools.area} fill="none" stroke="blue" />}
+      {area && <rect {...area} fill="none" stroke="blue" />}
     </Tool>
   )
 }

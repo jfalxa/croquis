@@ -2,11 +2,13 @@ import { h } from 'hyperapp'
 import withMouseEvents from '../utils/withMouseEvents'
 
 
-const Tool = (props, children) => (
-  <g
-    oncreate={element => props.initMouse(element.parentElement)}
-    ondestroy={element => props.destroyMouse(element.parentElement)}
-  >
+const Tool = ({ name, startDragging }, children) => (
+  <g onmousedown={startDragging}>
+    <rect
+      fill="transparent"
+      style={{ width: '100%', height: '100%' }}
+    />
+
     {children}
   </g>
 )

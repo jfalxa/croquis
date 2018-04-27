@@ -24,10 +24,6 @@ const withMouseEvents = (Component) => (props, children) => {
     props.onMouseDown && props.onMouseDown(getMouseData(e, initialPosition))
   }
 
-  function onMouseMove(e) {
-    props.onMouseMove && props.onMouseMove(getMouseData(e, initialPosition))
-  }
-
   function onMouseDrag(e) {
     props.onMouseDrag && props.onMouseDrag(getMouseData(e, initialPosition))
   }
@@ -41,22 +37,9 @@ const withMouseEvents = (Component) => (props, children) => {
     initialPosition = null
   }
 
-  function initListeners(target) {
-    target.addEventListener('mousedown', onMouseDown)
-    props.onMouseMove && document.addEventListener('mousemove', onMouseMove)
-  }
-
-  function stopListening(target) {
-    target.removeEventListener('mousedown', onMouseDown)
-    props.onMouseMove && document.removeEventListener('mousemove', onMouseMove)
-  }
-
-
   return (
     <Component
       {...props}
-      initMouse={initListeners}
-      destroyMouse={stopListening}
       startDragging={onMouseDown}
       stopDragging={onMouseUp}
     >

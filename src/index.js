@@ -6,8 +6,7 @@ import Topbar from './Topbar'
 import Toolbar from './Toolbar'
 import Layers from './Layers'
 import Inspector from './Inspector'
-import SelectionTool from './tools/SelectionTool'
-import RectangleTool from './tools/RectangleTool'
+import Tools from './tools'
 
 import { shapes, transform } from './shapes'
 
@@ -16,6 +15,8 @@ let id = 2
 
 const state = {
   selection: [],
+
+  selectedTool: 'selection',
 
   tools: {},
 
@@ -28,6 +29,8 @@ const state = {
 
 const actions = {
   getState: () => state => state,
+
+  selectTool: ({ tool }) => ({ selectedTool: tool, tools: {}, selection: [] }),
 
   createElement: (element) => ({ elements }) => ({ elements: [...elements, { ...element, id: id++ }] }),
 
@@ -61,7 +64,7 @@ const actions = {
 const view = (state, actions) => (
   <Root>
     <Stage>
-      <SelectionTool />
+      <Tools />
     </Stage>
 
     <Topbar />
