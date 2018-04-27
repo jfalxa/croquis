@@ -1,7 +1,7 @@
 import { h } from 'hyperapp'
 import { Matrix2D } from 'kld-affine'
-import withMouseEvents from './withMouseEvents'
-import { reflection, center } from './utils/geometry'
+import withMouseEvents from '../utils/withMouseEvents'
+import { reflection, center } from '../utils/geometry'
 
 
 const Grip = withMouseEvents(({ position, startDragging }) => (

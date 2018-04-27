@@ -1,10 +1,9 @@
 import { h } from 'hyperapp'
 import { Point2D } from 'kld-affine'
-import styled from './styled'
-import { bbox } from './utils/geometry'
+import { bbox } from './geometry'
 
 
-const getMouseData = (e, initialPosition) => {
+function getMouseData (e, initialPosition) {
   const position = new Point2D(e.pageX, e.pageY)
   const area = bbox({ args: [initialPosition, position] })
 

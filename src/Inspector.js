@@ -1,6 +1,6 @@
 import { h } from 'hyperapp'
-import styled from './styled'
 import { Point2D, Matrix2D } from 'kld-affine'
+import styled from './style'
 import { bbox, joinBboxes } from './utils/geometry'
 
 

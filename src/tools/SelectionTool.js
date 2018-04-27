@@ -1,10 +1,10 @@
 import { h } from 'hyperapp'
 import last from 'lodash/last'
 import { Shapes } from 'kld-intersections'
-import styled from './styled'
+import styled from '../style'
 import Tool from './Tool'
 import TransformControls from './TransformControls'
-import { rectangle, isPointIn, isIntersecting, bbox, joinBboxes } from './utils/geometry'
+import { rectangle, isPointIn, isIntersecting, bbox, joinBboxes } from '../utils/geometry'
 
 
 const SelectionTool = (props) => (state, actions) => {

@@ -1,5 +1,5 @@
 import { h } from 'hyperapp'
-import styled from './styled'
+import styled from './style'
 
 
 const ToolbarContainer = styled('div')({

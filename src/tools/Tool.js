@@ -1,5 +1,5 @@
 import { h } from 'hyperapp'
-import withMouseEvents from './withMouseEvents'
+import withMouseEvents from '../utils/withMouseEvents'
 
 
 const Tool = (props, children) => (

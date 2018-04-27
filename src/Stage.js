@@ -1,5 +1,5 @@
 import { h } from 'hyperapp'
-import styled from './styled'
+import styled from './style'
 import { svgPath } from './utils/svg'
 import { Shape } from './shapes'
 
