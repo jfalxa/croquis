@@ -11,6 +11,10 @@ const RectangleTool = (props) => (state, actions) => {
   }
 
   function addRectangle({ area }) {
+    if ( area.width <= 1 && area.height <= 1 ) {
+      return
+    }
+
     const rectangle = Rectangle.create(area)
     actions.createElement(rectangle)
     actions.tools.set({ area: null })
