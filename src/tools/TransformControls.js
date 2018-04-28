@@ -29,7 +29,7 @@ const TransformControls = ({ box }) => (state, actions) => {
 
 
   function startTransformation({ e }) {
-    e.stopPropagation()
+    !e.shiftKey && e.stopPropagation()
     elements = state.elements.filter(element => state.selection.includes(element.id))
   }
 
