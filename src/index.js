@@ -67,13 +67,9 @@ const view = (state, actions) => (
       <Tools />
     </Stage>
 
-    <Topbar />
-
-    <div style={{ flex: 1 }}>
-      <Toolbar />
-      <Layers />
-      <Inspector />
-    </div>
+    <Toolbar />
+    <Layers />
+    <Inspector />
   </Root>
 )
 

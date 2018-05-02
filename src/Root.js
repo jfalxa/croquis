@@ -4,7 +4,7 @@ import styled from './style'
 
 const Root = styled('div')({
 
-  flexDirection: 'column',
+  flexDirection: 'row',
   height: '100%',
   userSelect: 'none',
 
@@ -17,7 +17,8 @@ const Root = styled('div')({
 
   'null, body *': {
     display: 'flex',
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
+    flexDirection: 'column'
   },
 
 })

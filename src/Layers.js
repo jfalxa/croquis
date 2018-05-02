@@ -8,21 +8,49 @@ const LayersContainer = styled('div')({
   border: '1px solid black'
 })
 
-const Layer = styled('span')(props => ({
+const LayerNode = styled('span')(props => ({
   fontWeight: props.selected ? 'bold' : 'normal'
 }))
 
+const Layer = ({ id, type, selected, onSelect }, children) => (
+  <li>
+    <LayerNode
+      selected={selected}
+      onclick={e => onSelect({ elements: [id], toggle: e.shiftKey })}
+    >
+      {type} {id}
+    </LayerNode>
+
+    {children}
+  </li>
+)
+
+const Tree = ({ nodes, renderNode:Node }) => (
+  <ul>
+    {nodes.map(({ ...node, children }) => (
+      <Node key={node.id} {...node}>
+        {(children && children.length > 0) && (
+          <Tree nodes={children} renderNode={Node} />
+        )}
+      </Node>
+    ))}
+  </ul>
+)
 
 const Layers = (props) => (state, actions) => (
   <LayersContainer>
-    {state.elements.map(element => (
-      <Layer
-        selected={state.selection.includes(element.id)}
-        onclick={e => actions.selectElements({ elements: [element.id], add: e.shiftKey })}
-      >
-        {element.type} {element.id}
-      </Layer>
-    ))}
+    <Tree
+      nodes={state.elements}
+      renderNode={(element, children) => (
+        <Layer
+          {...element}
+          selected={state.selection.includes(element.id)}
+          onSelect={actions.selectElements}
+        >
+          {children}
+        </Layer>
+      )}
+    />
   </LayersContainer>
 )
 
