@@ -1,13 +1,14 @@
-import immutableUpdate from 'immutability-helper'
 import get from 'lodash/get'
 import set from 'lodash/set'
+import uniq from 'lodash/uniq'
 import isMatch from 'lodash/isMatch'
 import findIndex from 'lodash/findIndex'
 import flatMap from 'lodash/flatMap'
+import immutableUpdate from 'immutability-helper'
 
 
 export function flatten(tree) {
-  return flatMap(tree, node => [node, ...flatten(node.children)])
+  return uniq(flatMap(tree, node => [node, ...flatten(node.children)]))
 }
 
 export function find(tree, node) {
