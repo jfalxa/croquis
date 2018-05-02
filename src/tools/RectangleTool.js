@@ -1,6 +1,5 @@
 import { h } from 'hyperapp'
 import Tool from './Tool'
-import { rectangle } from '../utils/geometry'
 import * as Rectangle from '../shapes/rectangle'
 
 

@@ -13,6 +13,10 @@ export function baseTransform(points, transformation) {
 }
 
 export function transform(element, transformation) {
+  if (element.type === 'Group') {
+    return element
+  }
+
   const shapeTransform = shapes[element.type].transform
 
   const points = shapeTransform
@@ -29,6 +33,12 @@ export const Shape = ({ type, ...props }) => {
   switch (type) {
     case Rectangle.type:
       return <Rectangle.render {...props} />
+    case 'Group':
+      return (
+        <g>
+          {props.children.map(child => <Shape {...child} />)}
+        </g>
+      )
     default:
       return null
   }

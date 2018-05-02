@@ -1,7 +1,8 @@
 import { h } from 'hyperapp'
 import { Point2D, Matrix2D } from 'kld-affine'
 import styled from './style'
-import { bbox, joinBboxes } from './utils/geometry'
+import * as Tree from './utils/tree'
+import { getBbox, getSelectionElements } from './utils/helpers'
 
 
 const InspectorContainer = styled('div')({
@@ -14,17 +15,16 @@ const InspectorContainer = styled('div')({
 
 const Inspector = (props) => (state, actions) => {
 
-  const elements = state.elements.filter(element => state.selection.includes(element.id))
+  const elements = getSelectionElements(state)
+  const selectionBbox = getBbox(...elements)
 
-  function getBbox(e) {
-    const bound = e.target.name
-    const value = parseInt(e.target.value || 0, 10)
 
-    return { ...selectionBbox, [bound]: value }
+  function updateBbox(e) {
+    return { ...selectionBbox, [e.target.name]: parseInt(e.target.value || 0, 10) }
   }
 
   function handleTranslation(e) {
-    const bbox = getBbox(e)
+    const bbox = updateBbox(e)
 
     const tx = bbox.x - selectionBbox.x
     const ty = bbox.y - selectionBbox.y
@@ -35,7 +35,7 @@ const Inspector = (props) => (state, actions) => {
   }
 
   function handleScaling(e) {
-    const bbox = getBbox(e)
+    const bbox = updateBbox(e)
     const anchor = new Point2D(selectionBbox.x, selectionBbox.y)
 
     const sx = bbox.width / selectionBbox.width
@@ -45,10 +45,6 @@ const Inspector = (props) => (state, actions) => {
 
     actions.transformElements({ elements, transformation: scaling })
   }
-
-
-  const selectionBboxes = elements.map(element => bbox(element.shape))
-  const selectionBbox = joinBboxes(...selectionBboxes)
 
 
   return (

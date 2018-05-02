@@ -1,6 +1,7 @@
 import { h } from 'hyperapp'
 import { Matrix2D } from 'kld-affine'
 import withMouseEvents from '../utils/withMouseEvents'
+import { getSelectionElements } from '../utils/helpers'
 import { reflection, center } from '../utils/geometry'
 
 
@@ -30,7 +31,7 @@ const TransformControls = ({ box }) => (state, actions) => {
 
   function startTransformation({ e }) {
     !e.shiftKey && e.stopPropagation()
-    elements = state.elements.filter(element => state.selection.includes(element.id))
+    elements = getSelectionElements(state)
   }
 
   function translation({ initialPosition, position }) {

@@ -8,7 +8,9 @@ import Layers from './Layers'
 import Inspector from './Inspector'
 import Tools from './tools'
 
-import { shapes, transform } from './shapes'
+import * as Tree from './utils/tree'
+import { shapes } from './shapes'
+import { transformElements } from './utils/helpers'
 
 
 let id = 2
@@ -21,8 +23,12 @@ const state = {
   tools: {},
 
   elements: [
-    shapes.Rectangle.create({ id: 0, x: 200, y: 300, width: 400, height: 100 }),
-    shapes.Rectangle.create({ id: 1, x: 300, y: 100, width: 100, height: 150 }),
+    { id: 2, type: 'Group', children: [
+      { id: 3, type: 'Group', children: [
+        shapes.Rectangle.create({ id: 0, x: 200, y: 300, width: 400, height: 100 }),
+        shapes.Rectangle.create({ id: 1, x: 300, y: 100, width: 100, height: 150 }),
+      ]}
+    ]}
   ]
 }
 
@@ -34,23 +40,17 @@ const actions = {
 
   createElement: (element) => ({ elements }) => ({ elements: [...elements, { ...element, id: id++ }] }),
 
-  selectElements: ({ elements, add }) => ({ selection }) => ({
-    selection: add ? xor(selection, elements) : elements
+  selectElements: ({ elements, toggle }) => ({ selection }) => ({
+    selection: toggle ? xor(selection, elements) : elements
   }),
 
   updateElements: ({ elements }) => (state) => ({
-    elements: state.elements.map(element => {
-      const update = elements.find(({ id }) => (id === element.id))
-
-      return update
-        ? { ...element, ...update }
-        : element
-    })
+    elements: elements.reduce(Tree.update, state.elements)
   }),
 
   transformElements: ({ elements, transformation }) => (state, actions) => (
     actions.updateElements({
-      elements: elements.map(element => transform(element, transformation))
+      elements: transformElements(elements, transformation)
     })
   ),
 

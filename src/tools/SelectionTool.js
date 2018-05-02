@@ -1,36 +1,38 @@
 import { h } from 'hyperapp'
-import last from 'lodash/last'
 import { Shapes } from 'kld-intersections'
-import styled from '../style'
 import Tool from './Tool'
 import TransformControls from './TransformControls'
-import { rectangle, isPointIn, isIntersecting, bbox, joinBboxes } from '../utils/geometry'
+import * as Tree from '../utils/tree'
+import { getBbox, getSelectionElements } from '../utils/helpers'
+import { isPointIn, isIntersecting } from '../utils/geometry'
 
 
 const SelectionTool = (props) => (state, actions) => {
 
-  function getElements() {
-    return actions.getState().elements.slice().reverse()
+  function getShapes() {
+    return Tree.flatten(state.elements)
+      .filter(element => Boolean(element.shape))
+      .reverse()
   }
 
   function selectElement({ e, position }) {
-    const found = getElements()
+    const element = getShapes()
       .find(element => isPointIn(position, element.shape))
 
     actions.selectElements({
-      elements: found ? [found.id] : [],
-      add: e.shiftKey
+      elements: element ? [element.id] : [],
+      toggle: e.shiftKey
     })
   }
 
   function selectElementsInArea({ area } ) {
     const areaRect = Shapes.rectangle(area.x, area.y, area.width, area.height)
 
-    const found = getElements()
+    const elements = getShapes()
       .filter(element => isIntersecting(areaRect, element.shape))
       .map(element => element.id)
 
-    actions.selectElements({ elements: found })
+    actions.selectElements({ elements })
     actions.tools.set({ area })
   }
 
@@ -39,14 +41,13 @@ const SelectionTool = (props) => (state, actions) => {
   }
 
 
-  const { elements, selection, tools: { area } } = state
-  const selectionElements = elements.filter(element => selection.includes(element.id))
+  const { area } = state.tools
+  const selectionElements = getSelectionElements(state)
+  const selectionBbox = getBbox(...selectionElements)
 
   const hasArea = Boolean(area)
   const hasSelection = (selectionElements.length > 0)
 
-  const selectionBboxes = selectionElements.map(element => bbox(element.shape))
-  const selectionBbox = joinBboxes(...selectionBboxes)
 
   return (
     <Tool
@@ -55,10 +56,6 @@ const SelectionTool = (props) => (state, actions) => {
       onMouseUp={endSelection}
     >
       {hasArea && <rect {...area} fill="none" stroke="blue" />}
-
-      {selectionBboxes.map(bbox => (
-        <rect {...bbox} fill="none" stroke="blue" />
-      ))}
 
       {hasSelection && <TransformControls box={selectionBbox} />}
     </Tool>
