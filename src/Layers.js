@@ -16,7 +16,7 @@ const Layer = ({ id, type, selected, onSelect }, children) => (
   <li>
     <LayerNode
       selected={selected}
-      onclick={e => onSelect({ elements: [id], toggle: e.shiftKey })}
+      onclick={e => onSelect({ elements: [id], subselection: true, toggle: e.shiftKey })}
     >
       {type} {id}
     </LayerNode>

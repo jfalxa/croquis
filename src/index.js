@@ -1,5 +1,4 @@
 import { h, app } from 'hyperapp'
-import xor from 'lodash/xor'
 import Root from './Root'
 import Stage from './Stage'
 import Topbar from './Topbar'
@@ -10,10 +9,10 @@ import Tools from './tools'
 
 import * as Tree from './utils/tree'
 import { shapes } from './shapes'
-import { transformElements } from './utils/helpers'
+import { selectElements, transformElements } from './utils/helpers'
 
 
-let id = 2
+let id = 8
 
 const state = {
   selection: [],
@@ -28,6 +27,13 @@ const state = {
         shapes.Rectangle.create({ id: 0, x: 200, y: 300, width: 400, height: 100 }),
         shapes.Rectangle.create({ id: 1, x: 300, y: 100, width: 100, height: 150 }),
       ]}
+    ]},
+    { id: 4, type: 'Group', children: [
+      { id: 5, type: 'Group', children: [
+        shapes.Rectangle.create({ id: 6, x: 200, y: 300, width: 400, height: 100 }),
+        shapes.Rectangle.create({ id: 7, x: 300, y: 100, width: 100, height: 150 }),
+        shapes.Rectangle.create({ id: 8, x: 300, y: 100, width: 100, height: 150 }),
+      ]}
     ]}
   ]
 }
@@ -40,8 +46,8 @@ const actions = {
 
   createElement: (element) => ({ elements }) => ({ elements: [...elements, { ...element, id: id++ }] }),
 
-  selectElements: ({ elements, toggle }) => ({ selection }) => ({
-    selection: toggle ? xor(selection, elements) : elements
+  selectElements: (selection) => (state) => ({
+    selection: selectElements(state, selection)
   }),
 
   updateElements: ({ elements }) => (state) => ({

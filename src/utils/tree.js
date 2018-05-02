@@ -7,6 +7,21 @@ import flatMap from 'lodash/flatMap'
 import immutableUpdate from 'immutability-helper'
 
 
+function buildFullPath(path) {
+  return '[' + path.join('].children[') + ']'
+}
+
+function buildPatch(path, command) {
+  return (path && path.length > 0)
+    ? set({}, buildFullPath(path), command)
+    : {}
+}
+
+
+export function at(tree, path) {
+  return get(tree, buildFullPath(path))
+}
+
 export function flatten(tree) {
   return uniq(flatMap(tree, node => [node, ...flatten(node.children)]))
 }
@@ -39,16 +54,11 @@ export function findPath(tree=[], source) {
   return path
 }
 
-
-function buildFullPath(path) {
-  return '[' + path.join('].children[') + ']'
+export function findAncestor(tree, node) {
+  const path = findPath(tree, node)
+  return tree[path[0]]
 }
 
-function buildPatch(path, command) {
-  return (path && path.length > 0)
-    ? set({}, buildFullPath(path), command)
-    : {}
-}
 
 export function update(tree, node) {
   const path = findPath(tree, { id: node.id })
