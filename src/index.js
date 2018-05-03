@@ -1,7 +1,6 @@
 import { h, app } from 'hyperapp'
 import Root from './Root'
 import Stage from './Stage'
-import Topbar from './Topbar'
 import Toolbar from './Toolbar'
 import Layers from './Layers'
 import Inspector from './Inspector'
