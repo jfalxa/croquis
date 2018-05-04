@@ -53,26 +53,32 @@ export function transformElements(elements, transformation) {
 }
 
 export function groupElements({ selection, elements }, groupID) {
-  const elementsWithoutGroup = Tree.filter(elements, element => !selection.includes(element.id))
+  const removeSelection = tree => Tree.filter(tree, element => !selection.includes(element.id))
+
+  const elementsWithoutGroup = removeSelection(elements)
   const children = selection.map(id => Tree.find(elements, { id }))
-  const group = { id: groupID, type: 'Group', children }
+    .map(({ ...element, children }) => ({ ...element, children: removeSelection(children) }))
 
-  // TODO: place group element in the closest common ancestor of all selected nodes
+  const parent = Tree.findCommonAncestor(elements, children)
 
-  return [...elementsWithoutGroup, group]
+  const group = {
+    id: groupID,
+    type: 'Group',
+    children
+  }
+
+  return parent
+    ? Tree.update(elementsWithoutGroup, { id: parent.id, children: { $push: [group] } })
+    : [...elementsWithoutGroup, group]
 }
 
 export function ungroupElements({ selection, elements }) {
-  const groupPath = Tree.findPath(elements, { id: selection[0] })
-  const group = Tree.at(elements, groupPath)
+  const group = Tree.find(elements, { id: selection[0] })
+  const parent = Tree.findParent(elements, group)
   const elementsWithoutGroup = Tree.filter(elements, element => !selection.includes(element.id))
 
-  const parent = (groupPath.length > 1)
-    ? Tree.at(elementsWithoutGroup, groupPath.slice(0, -1))
-    : null
-
   return parent
-    ? Tree.update(elementsWithoutGroup, { id: parent.id, children: [...parent.children, ...group.children] } )
+    ? Tree.update(elementsWithoutGroup, { id: parent.id, children: { $push: group.children } })
     : [...elementsWithoutGroup, ...group.children]
 }
 

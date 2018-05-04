@@ -59,15 +59,54 @@ export function findPath(tree=[], source) {
   return path
 }
 
+export function findParent(tree, node) {
+  const path = findPath(tree, node)
+  return (path.length > 1)
+    ? at(tree, path.slice(0, -1))
+    : null
+}
+
 export function findAncestor(tree, node) {
   const path = findPath(tree, node)
   return tree[path[0]]
 }
 
+export function findCommonAncestor(tree, nodes) {
+  const parentPaths = nodes.map(node => findPath(tree, { id: node.id }))
+    .map(path => path.slice(0, -1))
 
-export function update(tree, node) {
+  // find common path chunk
+  // => for each level of depth, push if it's the same index
+  const commonAncestorPath = parentPaths.reduce((ancestorPath, path) => {
+    const newAncestorPath = []
+
+    ancestorPath.some((index, i) => {
+      if (path[i] !== index) {
+        return true
+      }
+
+      newAncestorPath.push(index)
+    })
+
+    return newAncestorPath
+  })
+
+  return (commonAncestorPath.length > 0)
+    ? at(tree, commonAncestorPath)
+    : null
+}
+
+export function update(tree, { children, ...node}) {
+  const command = { $merge: node }
+
+  if (children) {
+    command.children = Array.isArray(children)
+      ? { $set: children }
+      : children
+  }
+
   const path = findPath(tree, { id: node.id })
-  const patch = buildPatch(path, { $merge: node })
+  const patch = buildPatch(path, command)
 
   return immutableUpdate(tree, patch)
 }
