@@ -1,5 +1,5 @@
 import { h } from 'hyperapp'
-import styled from './style'
+import styled from '../style'
 
 
 const tools = [

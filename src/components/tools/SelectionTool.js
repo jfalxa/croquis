@@ -2,9 +2,9 @@ import { h } from 'hyperapp'
 import { Shapes } from 'kld-intersections'
 import Tool from './Tool'
 import TransformControls from './TransformControls'
-import * as Tree from '../utils/tree'
-import { getBbox, getSelectionElements } from '../utils/helpers'
-import { isPointIn, isIntersecting } from '../utils/geometry'
+import * as Tree from '../../utils/tree'
+import { getBbox, getSelectionElements } from '../../utils/helpers'
+import { isPointIn, isIntersecting } from '../../utils/geometry'
 
 
 const SelectionTool = (props) => (state, actions) => {

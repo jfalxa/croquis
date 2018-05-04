@@ -1,6 +1,6 @@
 import { h } from 'hyperapp'
-import styled from './style'
-import { hasChild } from './utils/tree'
+import styled from '../style'
+import { hasChild } from '../utils/tree'
 
 
 function getRelativePosition(e) {

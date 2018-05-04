@@ -1,7 +1,7 @@
 import { h } from 'hyperapp'
-import styled from './style'
-import { svgPath } from './utils/svg'
-import { Shape } from './shapes'
+import styled from '../style'
+import { svgPath } from '../utils/svg'
+import { Shape } from '../shapes'
 
 
 const StageSvg = styled('svg')({

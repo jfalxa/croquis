@@ -1,8 +1,8 @@
 import { h } from 'hyperapp'
 import { Point2D, Matrix2D } from 'kld-affine'
-import styled from './style'
-import * as Tree from './utils/tree'
-import { getBbox, getSelectionElements } from './utils/helpers'
+import styled from '../style'
+import * as Tree from '../utils/tree'
+import { getBbox, getSelectionElements } from '../utils/helpers'
 
 
 const InspectorContainer = styled('div')({
