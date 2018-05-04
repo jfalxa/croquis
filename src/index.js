@@ -8,7 +8,7 @@ import Tools from './tools'
 
 import * as Tree from './utils/tree'
 import { shapes } from './shapes'
-import { selectElements, transformElements, groupElements, ungroupElements } from './utils/helpers'
+import { selectElements, transformElements, groupElements, ungroupElements, removeElements, moveElements } from './utils/helpers'
 
 
 let id = 9
@@ -65,6 +65,14 @@ const actions = {
 
   ungroupElements: () => (state) => ({
     elements: ungroupElements(state, id++)
+  }),
+
+  removeElements: ({ elements }) => (state) => ({
+    elements: removeElements(state.elements, elements)
+  }),
+
+  moveElements: ({ elements, target, relativePosition }) => (state) => ({
+    elements: moveElements(state.elements, target, elements, relativePosition)
   }),
 
   tools: {

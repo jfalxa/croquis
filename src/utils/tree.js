@@ -1,7 +1,7 @@
 import get from 'lodash/get'
 import set from 'lodash/set'
 import uniq from 'lodash/uniq'
-import isMatch from 'lodash/isMatch'
+import last from 'lodash/last'
 import findIndex from 'lodash/findIndex'
 import flatMap from 'lodash/flatMap'
 import immutableUpdate from 'immutability-helper'
@@ -15,6 +15,14 @@ function buildPatch(path, command) {
   return (path && path.length > 0)
     ? set({}, buildFullPath(path), command)
     : {}
+}
+
+function splice(arr, index, deleteCount=0, ...items) {
+  return [
+    ...arr.slice(0, index),
+    ...items,
+    ...arr.slice(index + deleteCount)
+  ]
 }
 
 
@@ -31,19 +39,11 @@ export function filter(tree=[], predicate) {
     .map(({ ...node, children }) => ({ ...node, children: filter(children, predicate) }))
 }
 
-export function find(tree, node) {
-  const path = findPath(tree, node)
-
-  return (path && path.length > 0)
-    ? get(tree, buildFullPath(path))
-    : undefined
-}
-
 export function findPath(tree=[], source) {
   let path
 
   tree.some((node, index) => {
-    if (isMatch(node, source)) {
+    if (node.id === source.id) {
       path = [index]
       return true
     }
@@ -59,9 +59,17 @@ export function findPath(tree=[], source) {
   return path
 }
 
+export function find(tree, node) {
+  const path = findPath(tree, node)
+
+  return (path && path.length > 0)
+    ? get(tree, buildFullPath(path))
+    : undefined
+}
+
 export function findParent(tree, node) {
   const path = findPath(tree, node)
-  return (path.length > 1)
+  return (path && path.length > 1)
     ? at(tree, path.slice(0, -1))
     : null
 }
@@ -72,7 +80,7 @@ export function findAncestor(tree, node) {
 }
 
 export function findCommonAncestor(tree, nodes) {
-  const parentPaths = nodes.map(node => findPath(tree, { id: node.id }))
+  const parentPaths = nodes.map(node => findPath(tree, node))
     .map(path => path.slice(0, -1))
 
   // find common path chunk
@@ -96,6 +104,13 @@ export function findCommonAncestor(tree, nodes) {
     : null
 }
 
+export function hasChild(tree, parent, child) {
+  const childPath = findPath(tree, child)
+  const parentPath = findPath(tree, parent)
+
+  return String(childPath).startsWith(parentPath)
+}
+
 export function update(tree, { children, ...node}) {
   const command = { $merge: node }
 
@@ -105,9 +120,21 @@ export function update(tree, { children, ...node}) {
       : children
   }
 
-  const path = findPath(tree, { id: node.id })
+  const path = findPath(tree, node)
   const patch = buildPatch(path, command)
 
   return immutableUpdate(tree, patch)
 }
 
+export function insert(tree, target, nodes, relativePosition=1) {
+  const movedIDs = nodes.map(node => node.id)
+  const treeWithoutNode = filter(tree, node => !movedIDs.includes(node.id))
+  const targetIndex = last(findPath(treeWithoutNode, target))
+  const targetParent = findParent(treeWithoutNode, target)
+
+  const spliceArgs = [targetIndex + relativePosition, 0, ...nodes]
+
+  return targetParent
+    ? update(treeWithoutNode, { id: targetParent.id, children: { $splice: [spliceArgs] } })
+    : splice(treeWithoutNode, ...spliceArgs)
+}

@@ -82,6 +82,17 @@ export function ungroupElements({ selection, elements }) {
     : [...elementsWithoutGroup, ...group.children]
 }
 
+export function removeElements(elements, removed) {
+  return Tree.filter(elements, element => !removed.includes(element.id))
+}
+
+export function moveElements(elements, targetElement, movedElements, relativePosition) {
+  const moved = movedElements.map(id => Tree.find(elements, { id }) || { id })
+  const target = Tree.find(elements, { id: targetElement })
+
+  return Tree.insert(elements, target, moved, relativePosition)
+}
+
 export function getBbox(...elements) {
   const bboxes = Tree.flatten(elements)
     .filter(element => Boolean(element.shape))
