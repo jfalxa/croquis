@@ -39,8 +39,6 @@ const state = {
 
 
 const actions = {
-  getState: () => state => state,
-
   selectTool: ({ tool }) => ({ selectedTool: tool, tools: {}, selection: [] }),
 
   createElement: (element) => ({ elements }) => ({ elements: [...elements, { ...element, id: id++ }] }),
