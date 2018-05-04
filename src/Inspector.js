@@ -49,6 +49,14 @@ const Inspector = (props) => (state, actions) => {
 
   return (
     <InspectorContainer>
+      {(elements.length > 1) && (
+        <button onclick={actions.groupElements}>Group</button>
+      )}
+
+      {(elements.length === 1) && (elements[0].type === 'Group') && (
+        <button onclick={actions.ungroupElements}>Ungroup</button>
+      )}
+
       <input
         placeholder="x"
         name="x"

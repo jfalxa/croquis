@@ -8,10 +8,10 @@ import Tools from './tools'
 
 import * as Tree from './utils/tree'
 import { shapes } from './shapes'
-import { selectElements, transformElements } from './utils/helpers'
+import { selectElements, transformElements, groupElements, ungroupElements } from './utils/helpers'
 
 
-let id = 8
+let id = 9
 
 const state = {
   selection: [],
@@ -59,6 +59,13 @@ const actions = {
     })
   ),
 
+  groupElements: () => (state) => ({
+    elements: groupElements(state, id++)
+  }),
+
+  ungroupElements: () => (state) => ({
+    elements: ungroupElements(state, id++)
+  }),
 
   tools: {
     set: props => props

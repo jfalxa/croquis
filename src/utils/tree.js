@@ -26,8 +26,13 @@ export function flatten(tree) {
   return uniq(flatMap(tree, node => [node, ...flatten(node.children)]))
 }
 
+export function filter(tree=[], predicate) {
+  return tree.filter(node => predicate(node))
+    .map(({ ...node, children }) => ({ ...node, children: filter(children, predicate) }))
+}
+
 export function find(tree, node) {
-  const path = findPath(node)
+  const path = findPath(tree, node)
 
   return (path && path.length > 0)
     ? get(tree, buildFullPath(path))

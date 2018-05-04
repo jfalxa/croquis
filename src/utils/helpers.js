@@ -52,6 +52,30 @@ export function transformElements(elements, transformation) {
     .map(element => transform(element, transformation))
 }
 
+export function groupElements({ selection, elements }, groupID) {
+  const elementsWithoutGroup = Tree.filter(elements, element => !selection.includes(element.id))
+  const children = selection.map(id => Tree.find(elements, { id }))
+  const group = { id: groupID, type: 'Group', children }
+
+  // TODO: place group element in the closest common ancestor of all selected nodes
+
+  return [...elementsWithoutGroup, group]
+}
+
+export function ungroupElements({ selection, elements }) {
+  const groupPath = Tree.findPath(elements, { id: selection[0] })
+  const group = Tree.at(elements, groupPath)
+  const elementsWithoutGroup = Tree.filter(elements, element => !selection.includes(element.id))
+
+  const parent = (groupPath.length > 1)
+    ? Tree.at(elementsWithoutGroup, groupPath.slice(0, -1))
+    : null
+
+  return parent
+    ? Tree.update(elementsWithoutGroup, { id: parent.id, children: [...parent.children, ...group.children] } )
+    : [...elementsWithoutGroup, ...group.children]
+}
+
 export function getBbox(...elements) {
   const bboxes = Tree.flatten(elements)
     .filter(element => Boolean(element.shape))
