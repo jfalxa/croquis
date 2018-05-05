@@ -15,7 +15,7 @@ const RectangleTool = (props) => (state, actions) => {
     }
 
     const rectangle = Rectangle.create(area)
-    actions.createElement(rectangle)
+    actions.elements.create(rectangle)
     actions.tools.set({ area: null })
   }
 

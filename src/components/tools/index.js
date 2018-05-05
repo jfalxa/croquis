@@ -3,8 +3,8 @@ import RectangleTool from './RectangleTool'
 import SelectionTool from './SelectionTool'
 
 
-const Tools = () => (state, actions) => {
-  switch (state.selectedTool) {
+const Tools = (props) => {
+  switch (props.selected) {
     case 'rectangle':
       return <RectangleTool />
 

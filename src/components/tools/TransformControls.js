@@ -31,7 +31,7 @@ const TransformControls = ({ box }) => (state, actions) => {
 
   function startTransformation({ e }) {
     !e.shiftKey && e.stopPropagation()
-    elements = getSelectionElements(state)
+    elements = getSelectionElements(state.elements)
   }
 
   function translation({ initialPosition, position }) {
@@ -39,7 +39,7 @@ const TransformControls = ({ box }) => (state, actions) => {
 
     const translation = Matrix2D.translation(tx, ty)
 
-    actions.transformElements({ elements, transformation: translation })
+    actions.elements.transform({ elements, transformation: translation })
   }
 
   function scaling(gripPosition, axis) {
@@ -51,7 +51,7 @@ const TransformControls = ({ box }) => (state, actions) => {
 
       const scaling = Matrix2D.nonUniformScalingAt(sx, sy, anchor)
 
-      actions.transformElements({ elements, transformation: scaling })
+      actions.elements.transform({ elements, transformation: scaling })
     }
   }
 

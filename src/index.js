@@ -1,12 +1,6 @@
 import { h, app } from 'hyperapp'
-import Root from './components/Root'
-import Stage from './components/Stage'
-import Toolbar from './components/Toolbar'
-import Layers from './components/Layers'
-import Inspector from './components/Inspector'
-import Tools from './components/tools'
-
 import * as Tree from './utils/tree'
+import App from './components/App'
 import { shapes } from './shapes'
 import { selectElements, transformElements, groupElements, ungroupElements, removeElements, moveElements } from './utils/helpers'
 
@@ -14,82 +8,76 @@ import { selectElements, transformElements, groupElements, ungroupElements, remo
 let id = 9
 
 const state = {
-  selection: [],
 
-  selectedTool: 'selection',
+  tools: {
+    selected: 'selection',
+  },
 
-  tools: {},
+  elements: {
+    selection: [],
 
-  elements: [
-    { id: 2, type: 'Group', children: [
-      { id: 3, type: 'Group', children: [
-        shapes.Rectangle.create({ id: 0, x: 200, y: 300, width: 400, height: 100 }),
-        shapes.Rectangle.create({ id: 1, x: 300, y: 100, width: 100, height: 150 }),
+    tree: [
+      { id: 2, type: 'Group', children: [
+        { id: 3, type: 'Group', children: [
+          shapes.Rectangle.create({ id: 0, x: 200, y: 300, width: 400, height: 100 }),
+          shapes.Rectangle.create({ id: 1, x: 300, y: 100, width: 100, height: 150 }),
+        ]}
+      ]},
+      { id: 4, type: 'Group', children: [
+        { id: 5, type: 'Group', children: [
+          shapes.Rectangle.create({ id: 6, x: 200, y: 300, width: 400, height: 100 }),
+          shapes.Rectangle.create({ id: 7, x: 300, y: 100, width: 100, height: 150 }),
+          shapes.Rectangle.create({ id: 8, x: 300, y: 100, width: 100, height: 150 }),
+        ]}
       ]}
-    ]},
-    { id: 4, type: 'Group', children: [
-      { id: 5, type: 'Group', children: [
-        shapes.Rectangle.create({ id: 6, x: 200, y: 300, width: 400, height: 100 }),
-        shapes.Rectangle.create({ id: 7, x: 300, y: 100, width: 100, height: 150 }),
-        shapes.Rectangle.create({ id: 8, x: 300, y: 100, width: 100, height: 150 }),
-      ]}
-    ]}
-  ]
+    ]
+  }
 }
 
 
 const actions = {
-  selectTool: ({ tool }) => ({ selectedTool: tool, tools: {}, selection: [] }),
+  elements: {
+    select: ({ elements, ...options }) => ({ tree, selection }) => ({
+      selection: selectElements(tree, selection, elements, options)
+    }),
 
-  createElement: (element) => ({ elements }) => ({ elements: [...elements, { ...element, id: id++ }] }),
+    create: (element) => ({ tree }) => ({
+      tree: [...tree, { ...element, id: id++ }],
+    }),
 
-  selectElements: (selection) => (state) => ({
-    selection: selectElements(state, selection)
-  }),
+    update: ({ elements }) => ({ tree }) => ({
+      tree: elements.reduce(Tree.update, tree),
+    }),
 
-  updateElements: ({ elements }) => (state) => ({
-    elements: elements.reduce(Tree.update, state.elements)
-  }),
+    group: () => ({ tree, selection }) => ({
+      tree:  groupElements(tree, selection, id++),
+    }),
 
-  transformElements: ({ elements, transformation }) => (state, actions) => (
-    actions.updateElements({
-      elements: transformElements(elements, transformation)
-    })
-  ),
+    ungroup: () => ({ tree, selection }) => ({
+      tree: ungroupElements(tree, selection[0])
+    }),
 
-  groupElements: () => (state) => ({
-    elements: groupElements(state, id++)
-  }),
+    remove: ({ elements }) => ({ tree }) => ({
+      tree: removeElements(tree, elements),
+    }),
 
-  ungroupElements: () => (state) => ({
-    elements: ungroupElements(state, id++)
-  }),
+    move: ({ elements, target, relativePosition }) => ({ tree }) =>  ({
+      tree: moveElements(tree, target, elements, relativePosition)
+    }),
 
-  removeElements: ({ elements }) => (state) => ({
-    elements: removeElements(state.elements, elements)
-  }),
-
-  moveElements: ({ elements, target, relativePosition }) => (state) => ({
-    elements: moveElements(state.elements, target, elements, relativePosition)
-  }),
+    transform: ({ elements, transformation }) => (state, actions) => (
+      actions.update({
+        elements: transformElements(elements, transformation)
+      })
+    ),
+  },
 
   tools: {
+    select: ({ tool }) => ({ selected: tool }),
+
     set: props => props
   }
 }
 
 
-const view = (state, actions) => (
-  <Root>
-    <Stage>
-      <Tools />
-    </Stage>
-
-    <Toolbar />
-    <Layers />
-    <Inspector />
-  </Root>
-)
-
-
-app(state, actions, view, document.body)
+app(state, actions, App, document.body)

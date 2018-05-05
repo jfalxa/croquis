@@ -13,10 +13,10 @@ const StageSvg = styled('svg')({
 })
 
 
-const Stage = (props, children) => (state, actions) => (
+const Stage = (props, children) => (
   <StageSvg>
     <g>
-      {state.elements.map(element => (
+      {props.elements.map(element => (
         <Shape {...element} />
       ))}
     </g>

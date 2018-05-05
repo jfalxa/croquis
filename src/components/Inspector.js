@@ -2,7 +2,7 @@ import { h } from 'hyperapp'
 import { Point2D, Matrix2D } from 'kld-affine'
 import styled from '../style'
 import * as Tree from '../utils/tree'
-import { getBbox, getSelectionElements } from '../utils/helpers'
+import { getBbox } from '../utils/helpers'
 
 
 const InspectorContainer = styled('div')({
@@ -13,9 +13,8 @@ const InspectorContainer = styled('div')({
 })
 
 
-const Inspector = (props) => (state, actions) => {
+const Inspector = ({ elements, onTransform, onGroup, onUngroup }) => {
 
-  const elements = getSelectionElements(state)
   const selectionBbox = getBbox(...elements)
 
 
@@ -31,7 +30,7 @@ const Inspector = (props) => (state, actions) => {
 
     const translation = Matrix2D.translation(tx, ty)
 
-    actions.transformElements({ elements, transformation: translation })
+    onTransform({ elements, transformation: translation })
   }
 
   function handleScaling(e) {
@@ -43,18 +42,18 @@ const Inspector = (props) => (state, actions) => {
 
     const scaling = Matrix2D.nonUniformScalingAt(sx, sy, anchor)
 
-    actions.transformElements({ elements, transformation: scaling })
+    onTransform({ elements, transformation: scaling })
   }
 
 
   return (
     <InspectorContainer>
       {(elements.length > 1) && (
-        <button onclick={actions.groupElements}>Group</button>
+        <button onclick={onGroup}>Group</button>
       )}
 
       {(elements.length === 1) && (elements[0].type === 'Group') && (
-        <button onclick={actions.ungroupElements}>Ungroup</button>
+        <button onclick={onUngroup}>Ungroup</button>
       )}
 
       <input

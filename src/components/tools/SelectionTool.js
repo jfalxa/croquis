@@ -10,7 +10,7 @@ import { isPointIn, isIntersecting } from '../../utils/geometry'
 const SelectionTool = (props) => (state, actions) => {
 
   function getShapes() {
-    return Tree.flatten(state.elements)
+    return Tree.flatten(state.elements.tree)
       .filter(element => Boolean(element.shape))
       .reverse()
   }
@@ -19,7 +19,7 @@ const SelectionTool = (props) => (state, actions) => {
     const element = getShapes()
       .find(element => isPointIn(position, element.shape))
 
-    actions.selectElements({
+    actions.elements.select({
       elements: element ? [element.id] : [],
       toggle: e.shiftKey
     })
@@ -32,7 +32,7 @@ const SelectionTool = (props) => (state, actions) => {
       .filter(element => isIntersecting(areaRect, element.shape))
       .map(element => element.id)
 
-    actions.selectElements({ elements })
+    actions.elements.select({ elements })
     actions.tools.set({ area })
   }
 
@@ -42,7 +42,7 @@ const SelectionTool = (props) => (state, actions) => {
 
 
   const { area } = state.tools
-  const selectionElements = getSelectionElements(state)
+  const selectionElements = getSelectionElements(state.elements)
   const selectionBbox = getBbox(...selectionElements)
 
   const hasArea = Boolean(area)

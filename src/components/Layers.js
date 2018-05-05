@@ -51,11 +51,11 @@ const Tree = ({ nodes, renderNode:Node }) => (
 
 let dragged = null
 
-const Layers = (props) => (state, actions) => {
+const Layers = ({ elements, selection, onSelect, onMove, onRemove }) => {
 
   function handleDragStart(id) {
     return (e) => {
-      if (!state.selection.includes(id)) {
+      if (!selection.includes(id)) {
         e.preventDefault()
       }
 
@@ -65,14 +65,14 @@ const Layers = (props) => (state, actions) => {
 
   function handleDragOver(id) {
     return (e) => {
-      if (dragged === id || hasChild(state.elements, { id: dragged }, { id })) {
+      if (dragged === id || hasChild(elements, { id: dragged }, { id })) {
         return
       }
 
       e.preventDefault()
 
       const relativePosition = getRelativePosition(e)
-      actions.moveElements({ elements: ['dummy'], target: id, relativePosition })
+      onMove({ elements: ['dummy'], target: id, relativePosition })
     }
   }
 
@@ -81,20 +81,20 @@ const Layers = (props) => (state, actions) => {
       dragged = null
       const relativePosition = getRelativePosition(e)
 
-      actions.removeElements({ elements: ['dummy'] })
-      actions.moveElements({ elements: state.selection, target: id, relativePosition })
+      onRemove({ elements: ['dummy'] })
+      onMove({ elements: selection, target: id, relativePosition })
     }
   }
 
   return (
     <LayersContainer>
       <Tree
-        nodes={state.elements}
+        nodes={elements}
         renderNode={(element, children) => (
           <Layer
             {...element}
-            selected={state.selection.includes(element.id)}
-            onSelect={actions.selectElements}
+            selected={selection.includes(element.id)}
+            onSelect={onSelect}
             onDragStart={handleDragStart}
             onDragOver={handleDragOver}
             onDrop={handleDrop}

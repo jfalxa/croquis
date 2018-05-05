@@ -23,20 +23,20 @@ const Tool = ({ name, active, onSelect }) => (
       type="radio"
       value={name}
       checked={active}
-      onchange={onSelect}
+      onchange={() => onSelect({ tool: name })}
     />
     <label htmlFor={`tool-${name}`}>{name}</label>
   </div>
 )
 
 
-const Toolbar = (props) => (state, actions) => (
+const Toolbar = ({ selected, onSelect }) => (
   <ToolbarContainer>
     {tools.map(tool => (
       <Tool
         name={tool}
-        active={state.selectedTool === tool}
-        onSelect={() => actions.selectTool({tool})}
+        active={selected === tool}
+        onSelect={onSelect}
       />
     ))}
   </ToolbarContainer>

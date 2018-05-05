@@ -10,39 +10,39 @@ const getAncestors = (tree, elements) => uniq(elements.map(id => Tree.findAncest
 const getPaths = (tree, elements) => elements.map(id => Tree.findPath(tree, { id }))
 
 
-export function selectElements(state, selection) {
+export function selectElements(elements, oldSelection, selection, options) {
   // basic case: user clicks on an element in the layer tree
-  if (!selection.toggle && selection.subselection) {
-    return selection.elements
+  if (!options.toggle && options.subselection) {
+    return selection
   }
 
   // user clicks on one element on the stage
-  else if (!selection.toggle && !selection.subselection) {
-    return getAncestors(state.elements, selection.elements)
+  else if (!options.toggle && !options.subselection) {
+    return getAncestors(elements, selection)
   }
 
   // user shift-clicks on layer tree
-  else if (selection.toggle && selection.subselection) {
-    return xor(state.selection, selection.elements)
+  else if (options.toggle && options.subselection) {
+    return xor(oldSelection, selection)
   }
 
   // user shift-clicks on the stage
-  else if (selection.toggle && !selection.subselection) {
-    const currentPaths = getPaths(state.elements, state.selection)
-    const newPaths = getPaths(state.elements, selection.elements)
+  else if (options.toggle && !options.subselection) {
+    const oldPaths = getPaths(elements, oldSelection)
+    const newPaths = getPaths(elements, selection)
 
     // only keep the paths that are exclusive to each selection array in order
     // to allow users to remove elements from selection by shift clicking them
-    const remainingCurrentPaths = currentPaths.filter(currentPath => !newPaths.some(newPath => String(newPath).startsWith(currentPath)))
-    const remainingNewPaths = newPaths.filter(newPath => !currentPaths.some(currentPath => String(newPath).startsWith(currentPath))).map(path => [path[0]])
+    const remainingOldPaths = oldPaths.filter(oldPath => !newPaths.some(newPath => String(newPath).startsWith(oldPath)))
+    const remainingNewPaths = newPaths.filter(newPath => !oldPaths.some(oldPath => String(newPath).startsWith(oldPath))).map(path => [path[0]])
 
-    return uniqBy([...remainingCurrentPaths, ...remainingNewPaths], String)
-      .map(path => Tree.at(state.elements, path).id)
+    return uniqBy([...remainingOldPaths, ...remainingNewPaths], String)
+      .map(path => Tree.at(elements, path).id)
   }
 }
 
-export function getSelectionElements({ selection, elements }) {
-  return Tree.flatten(elements)
+export function getSelectionElements({ tree, selection }) {
+  return Tree.flatten(tree)
     .filter(element => selection.includes(element.id))
 }
 
@@ -52,7 +52,7 @@ export function transformElements(elements, transformation) {
     .map(element => transform(element, transformation))
 }
 
-export function groupElements({ selection, elements }, groupID) {
+export function groupElements( elements, selection, groupID) {
   const removeSelection = tree => Tree.filter(tree, element => !selection.includes(element.id))
 
   const elementsWithoutGroup = removeSelection(elements)
@@ -72,10 +72,10 @@ export function groupElements({ selection, elements }, groupID) {
     : [...elementsWithoutGroup, group]
 }
 
-export function ungroupElements({ selection, elements }) {
-  const group = Tree.find(elements, { id: selection[0] })
+export function ungroupElements(elements, selection) {
+  const group = Tree.find(elements, { id: selection })
   const parent = Tree.findParent(elements, group)
-  const elementsWithoutGroup = Tree.filter(elements, element => !selection.includes(element.id))
+  const elementsWithoutGroup = Tree.filter(elements, element => (element.id !== selection))
 
   return parent
     ? Tree.update(elementsWithoutGroup, { id: parent.id, children: { $push: group.children } })
