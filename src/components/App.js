@@ -12,17 +12,19 @@ import LineTool from './tools/LineTool'
 import { getSelectionElements } from '../utils/helpers'
 
 
-const App = ({ elements, tools }, actions) => {
+const App = ({ elements, tools, stage }, actions) => {
 
   return (
     <Root>
 
       <Stage
+        stage={stage}
         elements={elements.tree}
         selection={elements.selection}
       >
         <SelectionTool
           active={tools.selected === 'selection'}
+          stage={stage}
           elements={elements.tree}
           selection={elements.selection}
           area={tools.area}
@@ -33,6 +35,7 @@ const App = ({ elements, tools }, actions) => {
 
         <RectangleTool
           active={tools.selected === 'rectangle'}
+          stage={stage}
           area={tools.area}
           onDrag={actions.tools.set}
           onCreate={actions.elements.create}
@@ -40,6 +43,7 @@ const App = ({ elements, tools }, actions) => {
 
         <EllipseTool
           active={tools.selected === 'ellipse'}
+          stage={stage}
           area={tools.area}
           onDrag={actions.tools.set}
           onCreate={actions.elements.create}
@@ -47,6 +51,7 @@ const App = ({ elements, tools }, actions) => {
 
         <LineTool
           active={tools.selected === 'line'}
+          stage={stage}
           initialPosition={tools.initialPosition}
           position={tools.position}
           onDrag={actions.tools.set}

@@ -4,10 +4,11 @@ import TransformControls from './TransformControls'
 import * as Tree from '../../utils/tree'
 import Rectangle from '../../shapes/rectangle'
 import { getSelectionElements } from '../../utils/helpers'
+import { project } from '../../utils/geometry'
 import { bbox, isPointIn, isInArea } from '../../utils/elements'
 
 
-const SelectionTool = ({ active, elements, selection, area, onDrag, onSelect, onTransform }) => {
+const SelectionTool = ({ active, stage, elements, selection, area, onDrag, onSelect, onTransform }) => {
 
   function getShapes() {
     return Tree.flatten(elements)
@@ -16,8 +17,10 @@ const SelectionTool = ({ active, elements, selection, area, onDrag, onSelect, on
   }
 
   function selectElement({ e, position }) {
+    const stagePosition = project(position, stage.zoom, stage.pan)
+
     const found = getShapes()
-      .find(element => isPointIn(position, element))
+      .find(element => isPointIn(stagePosition, element))
 
     onSelect({
       elements: found ? [found.id] : [],
@@ -26,7 +29,8 @@ const SelectionTool = ({ active, elements, selection, area, onDrag, onSelect, on
   }
 
   function selectElementsInArea({ area } ) {
-    const rectangle = Rectangle.create(area)
+    const stageArea = project(area, stage.zoom, stage.pan)
+    const rectangle = Rectangle.create(stageArea)
 
     const found = getShapes()
       .filter(element => isInArea(rectangle, element))
@@ -53,6 +57,7 @@ const SelectionTool = ({ active, elements, selection, area, onDrag, onSelect, on
       {(selection.length > 0) && (
         <TransformControls
           elements={getSelectionElements({ tree: elements, selection })}
+          stage={stage}
           onTransform={onTransform}
         />
       )}

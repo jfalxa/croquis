@@ -1,9 +1,10 @@
 import { h } from 'hyperapp'
 import Tool from './Tool'
 import Line from '../../shapes/line'
+import { project } from '../../utils/geometry'
 
 
-const LineTool = ({ active, initialPosition, position, onDrag, onCreate }) => {
+const LineTool = ({ active, initialPosition, position, stage: { zoom, pan }, onDrag, onCreate }) => {
 
   function drawLine({ initialPosition, position }) {
     onDrag({ initialPosition, position })
@@ -14,8 +15,13 @@ const LineTool = ({ active, initialPosition, position, onDrag, onCreate }) => {
       return
     }
 
+    const line = Line.create({
+      a: project(initialPosition, zoom, pan),
+      b: project(position, zoom, pan)
+    })
+
+    onCreate(line)
     onDrag({ initialPosition: null, position: null })
-    onCreate(Line.create({ a: initialPosition, b: position }))
   }
 
 

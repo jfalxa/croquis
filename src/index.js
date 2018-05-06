@@ -10,6 +10,11 @@ const state = {
     selected: 'selection',
   },
 
+  stage: {
+    zoom: 2,
+    pan: { x: 0, y: 0 }
+  },
+
   elements: {
     selection: [],
 

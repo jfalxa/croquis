@@ -1,4 +1,4 @@
-export const svgPath = ([first, ...rest], closed) => {
+export function svgPath([first, ...rest], closed) {
   const lines = rest.map(([x, y]) => `L${x},${y}`)
     .join(' ')
 
@@ -7,3 +7,6 @@ export const svgPath = ([first, ...rest], closed) => {
 
 
 
+export function zoomAndPanTransform(zoom, pan) {
+  return `scale(${zoom}) translate(${pan.x} ${pan.y})`
+}

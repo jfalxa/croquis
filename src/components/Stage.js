@@ -3,6 +3,7 @@ import styled from '../style'
 import * as shapes from '../shapes'
 import { bbox } from '../utils/elements'
 import { getSelectionElements } from '../utils/helpers'
+import { zoomAndPanTransform } from '../utils/svg'
 
 
 const StageSvg = styled('svg')({
@@ -49,25 +50,31 @@ const Shape = ({ type, children, ...props }) => {
   )
 }
 
-const Stage = ({ elements, selection }, children) => (
+const ZoomAndPan = ({ zoom, pan }, children) => (
+  <g transform={zoomAndPanTransform(zoom, pan)}>
+    {children}
+  </g>
+)
+
+const Stage = ({ elements, selection, stage }, children) => (
   <StageSvg>
-    <g>
+    <ZoomAndPan {...stage}>
       {elements.map(element => (
         <Shape
           key={element.id}
           {...element}
         />
       ))}
-    </g>
+    </ZoomAndPan>
 
-    <g>
+    <ZoomAndPan {...stage}>
       {getSelectionElements({ tree: elements, selection }).map(element => (
         <Selection
           key={element.id}
           {...element}
         />
       ))}
-    </g>
+    </ZoomAndPan>
 
     {children}
   </StageSvg>

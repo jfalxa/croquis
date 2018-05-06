@@ -1,3 +1,4 @@
+import { Point2D } from 'kld-affine'
 import { Intersection, IntersectionQuery } from 'kld-intersections'
 
 
@@ -12,8 +13,8 @@ IntersectionQuery.pointInRectangle = function(point, topLeft, bottomRight) {
 // EXTRA METHOD FOR IMPORTED LIB
 IntersectionQuery.pointInLine = function(point, topLeft, bottomRight) {
   const lineDistance = bottomRight.distanceFrom(topLeft)
-  const pointTopLeftDistance = point.distanceFrom(topLeft)
-  const pointBottomRightDistance = point.distanceFrom(bottomRight)
+  const pointTopLeftDistance = topLeft.distanceFrom(point)
+  const pointBottomRightDistance = bottomRight.distanceFrom(point)
 
   return (pointTopLeftDistance + pointBottomRightDistance) - lineDistance < 3
 }
@@ -78,3 +79,24 @@ export function reflection(point, center) {
   return { x, y }
 }
 
+export function project(box, zoom, pan) {
+  const x = box.x / zoom + pan.x
+  const y = box.y / zoom + pan.y
+  const width = box.width / zoom
+  const height = box.height / zoom
+
+  return (box instanceof Point2D)
+    ? new Point2D(x, y)
+    : { x, y, width, height }
+}
+
+export function unproject(box, zoom, pan) {
+  const x = (box.x - pan.x) * zoom
+  const y = (box.y - pan.y) * zoom
+  const width = box.width * zoom
+  const height = box.height * zoom
+
+  return (box instanceof Point2D)
+    ? new Point2D(x, y)
+    : { x, y, width, height }
+}

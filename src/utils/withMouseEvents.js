@@ -11,28 +11,28 @@ function getMouseData (e, initialPosition) {
 }
 
 
-const withMouseEvents = (Component) => (props, children) => {
+const withMouseEvents = (Component) => ({ onMouseDown, onMouseDrag, onMouseUp, ...props }, children) => {
 
   let initialPosition = null
 
-  function onMouseDown(e) {
+  function handleMouseDown(e) {
     initialPosition = new Point2D(e.pageX, e.pageY)
 
-    document.addEventListener('mousemove', onMouseDrag)
-    document.addEventListener('mouseup', onMouseUp)
+    document.addEventListener('mousemove', handleMouseDrag)
+    document.addEventListener('mouseup', handleMouseUp)
 
-    props.onMouseDown && props.onMouseDown(getMouseData(e, initialPosition))
+    onMouseDown && onMouseDown(getMouseData(e, initialPosition))
   }
 
-  function onMouseDrag(e) {
-    props.onMouseDrag && props.onMouseDrag(getMouseData(e, initialPosition))
+  function handleMouseDrag(e) {
+    onMouseDrag && onMouseDrag(getMouseData(e, initialPosition))
   }
 
-  function onMouseUp(e) {
-    document.removeEventListener('mousemove', onMouseDrag)
-    document.removeEventListener('mouseup', onMouseUp)
+  function handleMouseUp(e) {
+    document.removeEventListener('mousemove', handleMouseDrag)
+    document.removeEventListener('mouseup', handleMouseUp)
 
-    props.onMouseUp && props.onMouseUp(getMouseData(e, initialPosition))
+    onMouseUp && onMouseUp(getMouseData(e, initialPosition))
 
     initialPosition = null
   }
@@ -40,8 +40,8 @@ const withMouseEvents = (Component) => (props, children) => {
   return (
     <Component
       {...props}
-      startDragging={onMouseDown}
-      stopDragging={onMouseUp}
+      startDragging={handleMouseDown}
+      stopDragging={handleMouseUp}
     >
       {children}
     </Component>

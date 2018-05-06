@@ -1,9 +1,10 @@
 import { h } from 'hyperapp'
 import Tool from './Tool'
 import Rectangle from '../../shapes/rectangle'
+import { project } from '../../utils/geometry'
 
 
-const RectangleTool = ({ active, area, onDrag, onCreate }) => {
+const RectangleTool = ({ active, area, stage: { zoom, pan }, onDrag, onCreate }) => {
 
   function drawRectangle({ area }) {
     onDrag({ area })
@@ -14,8 +15,10 @@ const RectangleTool = ({ active, area, onDrag, onCreate }) => {
       return
     }
 
+    const rectangle = Rectangle.create(project(area, zoom, pan))
+
+    onCreate(rectangle)
     onDrag({ area: null })
-    onCreate(Rectangle.create(area))
   }
 
 

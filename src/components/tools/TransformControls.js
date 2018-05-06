@@ -2,7 +2,7 @@ import { h } from 'hyperapp'
 import { Matrix2D } from 'kld-affine'
 import withMouseEvents from '../../utils/withMouseEvents'
 import { bbox } from '../../utils/elements'
-import { reflection, center } from '../../utils/geometry'
+import { reflection, center, project, unproject } from '../../utils/geometry'
 
 
 const Grip = withMouseEvents(({ position, startDragging }) => (
@@ -25,14 +25,15 @@ const Body = withMouseEvents(({ box, startDragging }) => (
 ))
 
 
-const TransformControls = ({ elements, onTransform }) => {
+const TransformControls = ({ elements, stage: { zoom, pan }, onTransform }) => {
 
   function startTransformation({ e }) {
     !e.shiftKey && e.stopPropagation()
   }
 
   function translation({ initialPosition, position }) {
-    const { x:tx, y:ty } = position.subtract(initialPosition)
+    const vector = position.subtract(initialPosition)
+    const { x:tx, y:ty } = project(vector, zoom, pan)
 
     const translation = Matrix2D.translation(tx, ty)
 
@@ -46,14 +47,15 @@ const TransformControls = ({ elements, onTransform }) => {
       const sx = (!axis || axis === 'x') ? (position.x - anchor.x) / (initialPosition.x - anchor.x) : 1
       const sy = (!axis || axis === 'y') ? (position.y - anchor.y) / (initialPosition.y - anchor.y) : 1
 
-      const scaling = Matrix2D.nonUniformScalingAt(sx, sy, anchor)
+      const stageAnchor = project(anchor, zoom, pan)
+      const scaling = Matrix2D.nonUniformScalingAt(sx, sy, stageAnchor)
 
       onTransform({ elements, transformation: scaling })
     }
   }
 
 
-  const box = bbox(...elements)
+  const box = unproject(bbox(...elements), zoom, pan)
 
   const corners = [
     [box.x, box.y], // top left

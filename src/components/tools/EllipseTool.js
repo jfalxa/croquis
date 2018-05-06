@@ -1,9 +1,10 @@
 import { h } from 'hyperapp'
 import Tool from './Tool'
 import Ellipse from '../../shapes/ellipse'
+import { project } from '../../utils/geometry'
 
 
-const EllipseTool = ({ active, area, onDrag, onCreate }) => {
+const EllipseTool = ({ active, area, stage: { zoom, pan }, onDrag, onCreate }) => {
 
   function drawEllipse({ area }) {
     onDrag({ area })
@@ -14,8 +15,10 @@ const EllipseTool = ({ active, area, onDrag, onCreate }) => {
       return
     }
 
+    const ellipse = Ellipse.create(project(area, zoom, pan))
+
+    onCreate(ellipse)
     onDrag({ area: null })
-    onCreate(Ellipse.create(area))
   }
 
 
