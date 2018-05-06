@@ -4,7 +4,8 @@ import Stage from './Stage'
 import Toolbar from './Toolbar'
 import Layers from './Layers'
 import Inspector from './Inspector'
-import Tools from './tools'
+import SelectionTool from './tools/SelectionTool'
+import RectangleTool from './tools/RectangleTool'
 
 import { getSelectionElements } from '../utils/helpers'
 
@@ -15,7 +16,22 @@ const App = ({ elements, tools }, actions) => {
     <Root>
 
       <Stage elements={elements.tree}>
-        <Tools selected={tools.selected} />
+        <SelectionTool
+          active={tools.selected === 'selection'}
+          elements={elements.tree}
+          selection={elements.selection}
+          area={tools.area}
+          onDrag={actions.tools.setArea}
+          onSelect={actions.elements.select}
+          onTransform={actions.elements.transform}
+        />
+
+        <RectangleTool
+          active={tools.selected === 'rectangle'}
+          area={tools.area}
+          onDrag={actions.tools.setArea}
+          onCreate={actions.elements.create}
+        />
       </Stage>
 
       <Toolbar
@@ -40,6 +56,5 @@ const App = ({ elements, tools }, actions) => {
     </Root>
   )
 }
-
 
 export default App

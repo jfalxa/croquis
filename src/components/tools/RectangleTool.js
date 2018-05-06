@@ -3,10 +3,10 @@ import Tool from './Tool'
 import Rectangle from '../../shapes/rectangle'
 
 
-const RectangleTool = (props) => (state, actions) => {
+const RectangleTool = ({ active, area, onDrag, onCreate }) => {
 
   function drawRectangle({ area }) {
-    actions.tools.set({ area })
+    onDrag(area)
   }
 
   function addRectangle({ area }) {
@@ -15,15 +15,15 @@ const RectangleTool = (props) => (state, actions) => {
     }
 
     const rectangle = Rectangle.create(area)
-    actions.elements.create(rectangle)
-    actions.tools.set({ area: null })
+
+    onDrag(null)
+    onCreate(rectangle)
   }
 
 
-  const { area } = state.tools
-
   return (
     <Tool
+      active={active}
       onMouseDrag={drawRectangle}
       onMouseUp={addRectangle}
     >

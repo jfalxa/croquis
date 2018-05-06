@@ -1,7 +1,7 @@
 import { h } from 'hyperapp'
 import { Matrix2D } from 'kld-affine'
 import withMouseEvents from '../../utils/withMouseEvents'
-import { getSelectionElements } from '../../utils/helpers'
+import { bbox } from '../../utils/elements'
 import { reflection, center } from '../../utils/geometry'
 
 
@@ -25,13 +25,10 @@ const Body = withMouseEvents(({ box, startDragging }) => (
 ))
 
 
-const TransformControls = ({ box }) => (state, actions) => {
-  let elements = null
-
+const TransformControls = ({ elements, onTransform }) => {
 
   function startTransformation({ e }) {
     !e.shiftKey && e.stopPropagation()
-    elements = getSelectionElements(state.elements)
   }
 
   function translation({ initialPosition, position }) {
@@ -39,7 +36,7 @@ const TransformControls = ({ box }) => (state, actions) => {
 
     const translation = Matrix2D.translation(tx, ty)
 
-    actions.elements.transform({ elements, transformation: translation })
+    onTransform({ elements, transformation: translation })
   }
 
   function scaling(gripPosition, axis) {
@@ -51,10 +48,12 @@ const TransformControls = ({ box }) => (state, actions) => {
 
       const scaling = Matrix2D.nonUniformScalingAt(sx, sy, anchor)
 
-      actions.elements.transform({ elements, transformation: scaling })
+      onTransform({ elements, transformation: scaling })
     }
   }
 
+
+  const box = bbox(...elements)
 
   const corners = [
     [box.x, box.y], // top left
@@ -69,6 +68,7 @@ const TransformControls = ({ box }) => (state, actions) => {
     [box.x + box.width/2, box.y + box.height], // bottom
     [box.x, box.y + box.height/2] // left
   ]
+
 
   return (
     <g>

@@ -8,10 +8,10 @@ import { getSelectionElements } from '../../utils/helpers'
 import { isPointIn, isIntersecting } from '../../utils/geometry'
 
 
-const SelectionTool = (props) => (state, actions) => {
+const SelectionTool = ({ active, elements, selection, area, onDrag, onSelect, onTransform }) => {
 
   function getShapes() {
-    return Tree.flatten(state.elements.tree)
+    return Tree.flatten(elements)
       .filter(element => Boolean(element.shape))
       .reverse()
   }
@@ -20,7 +20,7 @@ const SelectionTool = (props) => (state, actions) => {
     const element = getShapes()
       .find(element => isPointIn(position, element.shape))
 
-    actions.elements.select({
+    onSelect({
       elements: element ? [element.id] : [],
       toggle: e.shiftKey
     })
@@ -29,36 +29,34 @@ const SelectionTool = (props) => (state, actions) => {
   function selectElementsInArea({ area } ) {
     const areaRect = Shapes.rectangle(area.x, area.y, area.width, area.height)
 
-    const elements = getShapes()
+    const found = getShapes()
       .filter(element => isIntersecting(areaRect, element.shape))
       .map(element => element.id)
 
-    actions.elements.select({ elements })
-    actions.tools.set({ area })
+    onDrag(area)
+    onSelect({ elements: found })
   }
 
   function endSelection() {
-    actions.tools.set({ area: null })
+    onDrag(null)
   }
-
-
-  const { area } = state.tools
-  const selectionElements = getSelectionElements(state.elements)
-  const selectionBbox = bbox(...selectionElements)
-
-  const hasArea = Boolean(area)
-  const hasSelection = (selectionElements.length > 0)
 
 
   return (
     <Tool
+      active={active}
       onMouseDown={selectElement}
       onMouseDrag={selectElementsInArea}
       onMouseUp={endSelection}
     >
-      {hasArea && <rect {...area} fill="none" stroke="blue" />}
+      {area && <rect {...area} fill="none" stroke="blue" />}
 
-      {hasSelection && <TransformControls box={selectionBbox} />}
+      {(selection.length > 0) && (
+        <TransformControls
+          elements={getSelectionElements({ tree: elements, selection })}
+          onTransform={onTransform}
+        />
+      )}
     </Tool>
   )
 }
