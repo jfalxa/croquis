@@ -2,7 +2,7 @@ import xor from 'lodash/xor'
 import uniq from 'lodash/uniq'
 import uniqBy from 'lodash/uniqBy'
 import * as Tree from './tree'
-import { joinBboxes } from './geometry'
+import { pointIn, isInside, isIntersecting, joinBboxes } from './geometry'
 import { shapeMethod } from '../utils/helpers'
 
 
@@ -54,7 +54,9 @@ export function group(elements, selection) {
   const removeSelection = tree => Tree.filter(tree, element => !selection.includes(element.id))
 
   const elementsWithoutGroup = removeSelection(elements)
-  const children = selection.map(id => Tree.find(elements, { id }))
+
+  const children = Tree.flatten(elements)
+    .filter(element => selection.includes(element.id))
     .map(({ ...element, children }) => ({ ...element, children: removeSelection(children) }))
 
   const group = create({ type: 'Group', children })
@@ -100,3 +102,13 @@ export function bbox(...elements) {
   return joinBboxes(...bboxes)
 }
 
+export function isPointIn(point, element) {
+  return pointIn(point, element.shape)
+}
+
+export function isInArea(area, element) {
+  const areaBbox = bbox(area)
+  const elementBbox = bbox(element)
+
+  return isInside(areaBbox, elementBbox) || isIntersecting(area.shape, element.shape)
+}

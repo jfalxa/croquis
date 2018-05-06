@@ -6,6 +6,7 @@ import Layers from './Layers'
 import Inspector from './Inspector'
 import SelectionTool from './tools/SelectionTool'
 import RectangleTool from './tools/RectangleTool'
+import EllipseTool from './tools/EllipseTool'
 
 import { getSelectionElements } from '../utils/helpers'
 
@@ -28,6 +29,13 @@ const App = ({ elements, tools }, actions) => {
 
         <RectangleTool
           active={tools.selected === 'rectangle'}
+          area={tools.area}
+          onDrag={actions.tools.setArea}
+          onCreate={actions.elements.create}
+        />
+
+        <EllipseTool
+          active={tools.selected === 'ellipse'}
           area={tools.area}
           onDrag={actions.tools.setArea}
           onCreate={actions.elements.create}

@@ -4,7 +4,8 @@ import styled from '../style'
 
 const tools = [
   'selection',
-  'rectangle'
+  'rectangle',
+  'ellipse'
 ]
 
 

@@ -39,14 +39,11 @@ export function joinBboxes(...bboxes) {
   return { x, y, width, height }
 }
 
-export function isPointIn(point, shape) {
+export function pointIn(point, shape) {
   return IntersectionQuery['pointIn' + shape.name](point, ...shape.args)
 }
 
-export function isInside(a, b) {
-  const container = bbox(a.args)
-  const element = bbox(b.args)
-
+export function isInside(container, element) {
   return element.x > container.x
     && element.x + element.width < container.x + container.width
     && element.y > container.y
@@ -54,7 +51,7 @@ export function isInside(a, b) {
 }
 
 export function isIntersecting(a, b) {
-  return isInside(a, b) || Intersection.intersect(a, b).points.length > 0
+  return Intersection.intersect(a, b).points.length > 0
 }
 
 export function center(box) {

@@ -14,12 +14,12 @@ const RectangleTool = ({ active, area, onDrag, onCreate }) => {
       return
     }
 
-    const rectangle = Rectangle.create(area)
-
     onDrag(null)
-    onCreate(rectangle)
+    onCreate(Rectangle.create(area))
   }
 
+
+  const rectangle = area && Rectangle.create(area)
 
   return (
     <Tool
@@ -27,7 +27,7 @@ const RectangleTool = ({ active, area, onDrag, onCreate }) => {
       onMouseDrag={drawRectangle}
       onMouseUp={addRectangle}
     >
-      {area && <rect {...area} fill="none" stroke="blue" />}
+      {rectangle && <Rectangle {...rectangle} style={{ fill: 'none', stroke: 'blue' }} />}
     </Tool>
   )
 }

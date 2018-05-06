@@ -1,11 +1,10 @@
 import { h } from 'hyperapp'
-import { Shapes } from 'kld-intersections'
 import Tool from './Tool'
 import TransformControls from './TransformControls'
 import * as Tree from '../../utils/tree'
-import { bbox } from '../../utils/elements'
+import Rectangle from '../../shapes/rectangle'
 import { getSelectionElements } from '../../utils/helpers'
-import { isPointIn, isIntersecting } from '../../utils/geometry'
+import { bbox, isPointIn, isInArea } from '../../utils/elements'
 
 
 const SelectionTool = ({ active, elements, selection, area, onDrag, onSelect, onTransform }) => {
@@ -17,20 +16,20 @@ const SelectionTool = ({ active, elements, selection, area, onDrag, onSelect, on
   }
 
   function selectElement({ e, position }) {
-    const element = getShapes()
-      .find(element => isPointIn(position, element.shape))
+    const found = getShapes()
+      .find(element => isPointIn(position, element))
 
     onSelect({
-      elements: element ? [element.id] : [],
+      elements: found ? [found.id] : [],
       toggle: e.shiftKey
     })
   }
 
   function selectElementsInArea({ area } ) {
-    const areaRect = Shapes.rectangle(area.x, area.y, area.width, area.height)
+    const rectangle = Rectangle.create(area)
 
     const found = getShapes()
-      .filter(element => isIntersecting(areaRect, element.shape))
+      .filter(element => isInArea(rectangle, element))
       .map(element => element.id)
 
     onDrag(area)
