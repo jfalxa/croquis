@@ -11,7 +11,7 @@ const Grip = withMouseEvents(({ position, startDragging }) => (
     cy={position.y}
     r="5"
     fill="red"
-    onmousedown={startDragging}
+    onmousedown={e => (e.button === 0) && startDragging(e)}
   />
 ))
 
@@ -20,7 +20,7 @@ const Body = withMouseEvents(({ box, startDragging }) => (
     {...box}
     fill="rgba(255, 0, 0, 0.2)"
     stroke="red"
-    onmousedown={startDragging}
+    onmousedown={e => (e.button === 0) && startDragging(e)}
   />
 ))
 
@@ -33,7 +33,7 @@ const TransformControls = ({ elements, stage: { zoom, pan }, onTransform }) => {
 
   function translation({ initialPosition, position }) {
     const vector = position.subtract(initialPosition)
-    const { x:tx, y:ty } = project(vector, zoom, pan)
+    const { x:tx, y:ty } = project(vector, zoom)
 
     const translation = Matrix2D.translation(tx, ty)
 

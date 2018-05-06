@@ -21,6 +21,7 @@ const App = ({ elements, tools, stage }, actions) => {
         stage={stage}
         elements={elements.tree}
         selection={elements.selection}
+        onZoomAndPan={actions.stage.zoomAndPan}
       >
         <SelectionTool
           active={tools.selected === 'selection'}

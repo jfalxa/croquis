@@ -1,7 +1,7 @@
-import { Point2D } from 'kld-affine'
 import { IntersectionArgs } from 'kld-intersections'
 import * as Tree from './tree'
 import * as shapes from '../shapes'
+import { point } from './geometry'
 
 
 export function splice(arr, index, deleteCount=0, ...items) {
@@ -19,7 +19,7 @@ export function getSelectionElements({ tree, selection }) {
 
 export function transformPoints(points, transformation) {
   return points.map(point => point.transform(transformation))
-    .map(({ x, y }) => new Point2D(Math.round(x), Math.round(y)))
+    .map(({ x, y }) => point(Math.round(x), Math.round(y)))
 }
 
 export function updateShape(element, args) {
@@ -35,4 +35,6 @@ export function shapeMethod(method) {
   )
 }
 
-
+export function updateZoom(zoom, modifier) {
+  return Math.max(0.1, Math.min(zoom + modifier/300, 10))
+}

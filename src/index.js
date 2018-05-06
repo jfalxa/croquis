@@ -11,7 +11,7 @@ const state = {
   },
 
   stage: {
-    zoom: 2,
+    zoom: 1,
     pan: { x: 0, y: 0 }
   },
 

@@ -19,6 +19,9 @@ IntersectionQuery.pointInLine = function(point, topLeft, bottomRight) {
   return (pointTopLeftDistance + pointBottomRightDistance) - lineDistance < 3
 }
 
+export function point(x, y) {
+  return new Point2D(x, y)
+}
 
 export function bbox(points) {
   const xs = points.map(({ x }) => x)
@@ -79,24 +82,26 @@ export function reflection(point, center) {
   return { x, y }
 }
 
-export function project(box, zoom, pan) {
-  const x = box.x / zoom + pan.x
-  const y = box.y / zoom + pan.y
+// projects a box from the viewport of the screen to the zoomed and pan one
+export function project(box, zoom=1, pan={ x: 0, y: 0 }) {
+  const x = box.x / zoom - pan.x
+  const y = box.y / zoom - pan.y
   const width = box.width / zoom
   const height = box.height / zoom
 
-  return (box instanceof Point2D)
-    ? new Point2D(x, y)
-    : { x, y, width, height }
+  return (box.width || box.width === 0)
+    ? { x, y, width, height }
+    : point(x, y)
 }
 
+// projects a box from the zoomed and pan viewport to the screen's one
 export function unproject(box, zoom, pan) {
-  const x = (box.x - pan.x) * zoom
-  const y = (box.y - pan.y) * zoom
+  const x = (box.x + pan.x) * zoom
+  const y = (box.y + pan.y) * zoom
   const width = box.width * zoom
   const height = box.height * zoom
 
-  return (box instanceof Point2D)
-    ? new Point2D(x, y)
-    : { x, y, width, height }
+  return (box.width || box.width === 0)
+    ? { x, y, width, height }
+    : point(x, y)
 }
