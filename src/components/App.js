@@ -17,7 +17,10 @@ const App = ({ elements, tools }, actions) => {
   return (
     <Root>
 
-      <Stage elements={elements.tree}>
+      <Stage
+        elements={elements.tree}
+        selection={elements.selection}
+      >
         <SelectionTool
           active={tools.selected === 'selection'}
           elements={elements.tree}

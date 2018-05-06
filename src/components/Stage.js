@@ -1,6 +1,8 @@
 import { h } from 'hyperapp'
 import styled from '../style'
 import * as shapes from '../shapes'
+import { bbox } from '../utils/elements'
+import { getSelectionElements } from '../utils/helpers'
 
 
 const StageSvg = styled('svg')({
@@ -10,6 +12,27 @@ const StageSvg = styled('svg')({
   width: '100%',
   height: '100%'
 })
+
+const selectionStyle = {
+  fill: 'none',
+  stroke: 'blue',
+  strokeWidth: 2
+}
+
+const Selection = ({ type, ...props }) => {
+  if (type === 'Group') {
+    return <rect {...bbox(props)} {...selectionStyle} />
+  }
+
+  const ShapeComponent = shapes[type]
+
+  return ShapeComponent && (
+    <ShapeComponent
+      {...props}
+      style={selectionStyle}
+    />
+  )
+}
 
 const Shape = ({ type, children, ...props }) => {
   const ShapeComponent = shapes[type]
@@ -26,11 +49,20 @@ const Shape = ({ type, children, ...props }) => {
   )
 }
 
-const Stage = (props, children) => (
+const Stage = ({ elements, selection }, children) => (
   <StageSvg>
     <g>
-      {props.elements.map(element => (
+      {elements.map(element => (
         <Shape
+          key={element.id}
+          {...element}
+        />
+      ))}
+    </g>
+
+    <g>
+      {getSelectionElements({ tree: elements, selection }).map(element => (
+        <Selection
           key={element.id}
           {...element}
         />

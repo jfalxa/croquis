@@ -4,16 +4,14 @@ import { transformPoints, updateShape } from '../utils/helpers'
 import { bbox } from '../utils/geometry'
 
 
-const Rectangle = ({ shape, style }) => {
-  return (
-    <rect
-      {...bbox(shape.args)}
-      stroke="black"
-      fill="lightgrey"
-      {...style}
-    />
-  )
-}
+const Rectangle = ({ shape, style }) => (
+  <rect
+    {...bbox(shape.args)}
+    stroke="black"
+    fill="lightgrey"
+    {...style}
+  />
+)
 
 Rectangle.type = 'Rectangle'
 
