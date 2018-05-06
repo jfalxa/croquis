@@ -11,6 +11,8 @@ const Ellipse = ({ shape: { args: [center, rx, ry] }, style }) => {
       cy={center.y}
       rx={rx}
       ry={ry}
+      stroke="black"
+      fill="lightgrey"
       {...style}
     />
   )

@@ -6,7 +6,7 @@ import Ellipse from '../../shapes/ellipse'
 const EllipseTool = ({ active, area, onDrag, onCreate }) => {
 
   function drawEllipse({ area }) {
-    onDrag(area)
+    onDrag({ area })
   }
 
   function addEllipse({ area }) {
@@ -14,7 +14,7 @@ const EllipseTool = ({ active, area, onDrag, onCreate }) => {
       return
     }
 
-    onDrag(null)
+    onDrag({ area: null })
     onCreate(Ellipse.create(area))
   }
 

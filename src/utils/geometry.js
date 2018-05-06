@@ -9,6 +9,16 @@ IntersectionQuery.pointInRectangle = function(point, topLeft, bottomRight) {
     );
 }
 
+// EXTRA METHOD FOR IMPORTED LIB
+IntersectionQuery.pointInLine = function(point, topLeft, bottomRight) {
+  const lineDistance = bottomRight.distanceFrom(topLeft)
+  const pointTopLeftDistance = point.distanceFrom(topLeft)
+  const pointBottomRightDistance = point.distanceFrom(bottomRight)
+
+  return (pointTopLeftDistance + pointBottomRightDistance) - lineDistance < 3
+}
+
+
 export function bbox(points) {
   const xs = points.map(({ x }) => x)
   const ys = points.map(({ y }) => y)

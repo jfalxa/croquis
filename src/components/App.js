@@ -7,6 +7,7 @@ import Inspector from './Inspector'
 import SelectionTool from './tools/SelectionTool'
 import RectangleTool from './tools/RectangleTool'
 import EllipseTool from './tools/EllipseTool'
+import LineTool from './tools/LineTool'
 
 import { getSelectionElements } from '../utils/helpers'
 
@@ -22,7 +23,7 @@ const App = ({ elements, tools }, actions) => {
           elements={elements.tree}
           selection={elements.selection}
           area={tools.area}
-          onDrag={actions.tools.setArea}
+          onDrag={actions.tools.set}
           onSelect={actions.elements.select}
           onTransform={actions.elements.transform}
         />
@@ -30,14 +31,22 @@ const App = ({ elements, tools }, actions) => {
         <RectangleTool
           active={tools.selected === 'rectangle'}
           area={tools.area}
-          onDrag={actions.tools.setArea}
+          onDrag={actions.tools.set}
           onCreate={actions.elements.create}
         />
 
         <EllipseTool
           active={tools.selected === 'ellipse'}
           area={tools.area}
-          onDrag={actions.tools.setArea}
+          onDrag={actions.tools.set}
+          onCreate={actions.elements.create}
+        />
+
+        <LineTool
+          active={tools.selected === 'line'}
+          initialPosition={tools.initialPosition}
+          position={tools.position}
+          onDrag={actions.tools.set}
           onCreate={actions.elements.create}
         />
       </Stage>

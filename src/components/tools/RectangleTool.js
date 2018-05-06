@@ -6,7 +6,7 @@ import Rectangle from '../../shapes/rectangle'
 const RectangleTool = ({ active, area, onDrag, onCreate }) => {
 
   function drawRectangle({ area }) {
-    onDrag(area)
+    onDrag({ area })
   }
 
   function addRectangle({ area }) {
@@ -14,7 +14,7 @@ const RectangleTool = ({ active, area, onDrag, onCreate }) => {
       return
     }
 
-    onDrag(null)
+    onDrag({ area: null })
     onCreate(Rectangle.create(area))
   }
 

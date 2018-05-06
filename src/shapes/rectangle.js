@@ -8,6 +8,8 @@ const Rectangle = ({ shape, style }) => {
   return (
     <rect
       {...bbox(shape.args)}
+      stroke="black"
+      fill="lightgrey"
       {...style}
     />
   )

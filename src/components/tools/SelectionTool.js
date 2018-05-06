@@ -32,12 +32,12 @@ const SelectionTool = ({ active, elements, selection, area, onDrag, onSelect, on
       .filter(element => isInArea(rectangle, element))
       .map(element => element.id)
 
-    onDrag(area)
+    onDrag({ area })
     onSelect({ elements: found })
   }
 
   function endSelection() {
-    onDrag(null)
+    onDrag({ area: null })
   }
 
 
