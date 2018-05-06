@@ -5,6 +5,7 @@ import last from 'lodash/last'
 import findIndex from 'lodash/findIndex'
 import flatMap from 'lodash/flatMap'
 import immutableUpdate from 'immutability-helper'
+import { splice } from './helpers'
 
 
 function buildFullPath(path) {
@@ -16,15 +17,6 @@ function buildPatch(path, command) {
     ? set({}, buildFullPath(path), command)
     : {}
 }
-
-function splice(arr, index, deleteCount=0, ...items) {
-  return [
-    ...arr.slice(0, index),
-    ...items,
-    ...arr.slice(index + deleteCount)
-  ]
-}
-
 
 export function at(tree, path) {
   return get(tree, buildFullPath(path))

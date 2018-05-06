@@ -1,11 +1,8 @@
 import { h, app } from 'hyperapp'
-import * as Tree from './utils/tree'
 import App from './components/App'
-import { shapes } from './shapes'
-import { selectElements, transformElements, groupElements, ungroupElements, removeElements, moveElements } from './utils/helpers'
+import * as shapes from './shapes'
+import * as actions from './actions'
 
-
-let id = 9
 
 const state = {
 
@@ -31,51 +28,6 @@ const state = {
         ]}
       ]}
     ]
-  }
-}
-
-
-const actions = {
-  elements: {
-    select: ({ elements, ...options }) => ({ tree, selection }) => ({
-      selection: selectElements(tree, selection, elements, options)
-    }),
-
-    create: (element) => ({ tree }) => ({
-      tree: [...tree, { ...element, id: id++ }],
-    }),
-
-    update: ({ elements }) => ({ tree }) => ({
-      tree: elements.reduce(Tree.update, tree),
-    }),
-
-    group: () => ({ tree, selection }) => ({
-      tree:  groupElements(tree, selection, id++),
-    }),
-
-    ungroup: () => ({ tree, selection }) => ({
-      tree: ungroupElements(tree, selection[0])
-    }),
-
-    remove: ({ elements }) => ({ tree }) => ({
-      tree: removeElements(tree, elements),
-    }),
-
-    move: ({ elements, target, relativePosition }) => ({ tree }) =>  ({
-      tree: moveElements(tree, target, elements, relativePosition)
-    }),
-
-    transform: ({ elements, transformation }) => (state, actions) => (
-      actions.update({
-        elements: transformElements(elements, transformation)
-      })
-    ),
-  },
-
-  tools: {
-    select: ({ tool }) => ({ selected: tool }),
-
-    set: props => props
   }
 }
 

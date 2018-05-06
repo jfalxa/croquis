@@ -2,7 +2,7 @@ import { h } from 'hyperapp'
 import { Point2D, Matrix2D } from 'kld-affine'
 import styled from '../style'
 import * as Tree from '../utils/tree'
-import { getBbox } from '../utils/helpers'
+import { bbox } from '../utils/elements'
 
 
 const InspectorContainer = styled('div')({
@@ -15,7 +15,7 @@ const InspectorContainer = styled('div')({
 
 const Inspector = ({ elements, onTransform, onGroup, onUngroup }) => {
 
-  const selectionBbox = getBbox(...elements)
+  const selectionBbox = bbox(...elements)
 
 
   function updateBbox(e) {

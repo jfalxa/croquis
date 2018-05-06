@@ -1,7 +1,6 @@
 import { h } from 'hyperapp'
 import styled from '../style'
-import { svgPath } from '../utils/svg'
-import { Shape } from '../shapes'
+import * as shapes from '../shapes'
 
 
 const StageSvg = styled('svg')({
@@ -12,12 +11,29 @@ const StageSvg = styled('svg')({
   height: '100%'
 })
 
+const Shape = ({ type, children, ...props }) => {
+  const ShapeComponent = shapes[type]
+
+  return ShapeComponent && (
+    <ShapeComponent {...props}>
+      {children && children.map(child => (
+        <Shape
+          key={child.id}
+          {...child}
+        />
+      ))}
+    </ShapeComponent>
+  )
+}
 
 const Stage = (props, children) => (
   <StageSvg>
     <g>
       {props.elements.map(element => (
-        <Shape {...element} />
+        <Shape
+          key={element.id}
+          {...element}
+        />
       ))}
     </g>
 

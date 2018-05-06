@@ -1,6 +1,6 @@
 import { h } from 'hyperapp'
 import Tool from './Tool'
-import * as Rectangle from '../../shapes/rectangle'
+import Rectangle from '../../shapes/rectangle'
 
 
 const RectangleTool = (props) => (state, actions) => {

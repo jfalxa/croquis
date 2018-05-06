@@ -5,7 +5,7 @@ import { bbox } from './geometry'
 
 function getMouseData (e, initialPosition) {
   const position = new Point2D(e.pageX, e.pageY)
-  const area = bbox({ args: [initialPosition, position] })
+  const area = bbox([initialPosition, position])
 
   return { e, initialPosition, position, area }
 }

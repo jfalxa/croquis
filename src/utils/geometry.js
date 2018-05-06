@@ -1,27 +1,17 @@
 import { Intersection, IntersectionQuery } from 'kld-intersections'
 
 
-export function isPointIn(point, shape) {
-  return IntersectionQuery['pointIn' + shape.name](point, ...shape.args)
+// PATCH FOR TYPO IN IMPORTED LIB
+IntersectionQuery.pointInRectangle = function(point, topLeft, bottomRight) {
+    return (
+        topLeft.x <= point.x && point.x < bottomRight.x &&
+        topLeft.y <= point.y && point.y < bottomRight.y
+    );
 }
 
-export function isInside(a, b) {
-  const container = bbox(a)
-  const element = bbox(b)
-
-  return element.x > container.x
-    && element.x + element.width < container.x + container.width
-    && element.y > container.y
-    && element.y + element.height < container.y + container.height
-}
-
-export function isIntersecting(a, b) {
-  return isInside(a, b) || Intersection.intersect(a, b).points.length > 0
-}
-
-export function bbox(shape) {
-  const xs = shape.args.map(({ x }) => x)
-  const ys = shape.args.map(({ y }) => y)
+export function bbox(points) {
+  const xs = points.map(({ x }) => x)
+  const ys = points.map(({ y }) => y)
 
   const x = Math.min(...xs)
   const y = Math.min(...ys)
@@ -32,6 +22,10 @@ export function bbox(shape) {
 }
 
 export function joinBboxes(...bboxes) {
+  if (bboxes.length === 0) {
+    return { x: 0, y: 0, width: 0, height: 0 }
+  }
+
   const x1s = bboxes.map(bounds => bounds.x)
   const y1s = bboxes.map(bounds => bounds.y)
   const x2s = bboxes.map(bounds => bounds.x + bounds.width)
@@ -43,6 +37,24 @@ export function joinBboxes(...bboxes) {
   const height = Math.max(...y2s) - y
 
   return { x, y, width, height }
+}
+
+export function isPointIn(point, shape) {
+  return IntersectionQuery['pointIn' + shape.name](point, ...shape.args)
+}
+
+export function isInside(a, b) {
+  const container = bbox(a.args)
+  const element = bbox(b.args)
+
+  return element.x > container.x
+    && element.x + element.width < container.x + container.width
+    && element.y > container.y
+    && element.y + element.height < container.y + container.height
+}
+
+export function isIntersecting(a, b) {
+  return isInside(a, b) || Intersection.intersect(a, b).points.length > 0
 }
 
 export function center(box) {

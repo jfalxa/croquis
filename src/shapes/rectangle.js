@@ -1,34 +1,34 @@
 import { h } from 'hyperapp'
 import { Shapes } from 'kld-intersections'
-import { baseTransform } from './index'
+import { transformPoints, updateShape } from '../utils/helpers'
 import { bbox } from '../utils/geometry'
 
 
-export const type = 'Rectangle'
-
-
-export function create({ x, y, width, height, ...props }) {
-  const shape = Shapes.rectangle(x, y, width, height)
-  return { type, shape, ...props }
-}
-
-
-export function transform(points, transformation) {
-  const [a, b] = baseTransform(points, transformation)
-
-  const min = a.min(b)
-  const max = a.max(b)
-
-  return [min, max]
-}
-
-
-export function render({ shape, style }) {
+const Rectangle = ({ shape, style }) => {
   return (
     <rect
-      {...bbox(shape)}
+      {...bbox(shape.args)}
       {...style}
     />
   )
 }
 
+Rectangle.type = 'Rectangle'
+
+Rectangle.create = ({ x, y, width, height, ...props }) => ({
+  ...props,
+  type: Rectangle.type,
+  shape: Shapes.rectangle(x, y, width, height)
+})
+
+Rectangle.transform = (element, transformation) => {
+  const [a, b] = transformPoints(element.shape.args, transformation)
+
+  const min = a.min(b)
+  const max = a.max(b)
+
+  return updateShape(element, [min, max])
+}
+
+
+export default Rectangle

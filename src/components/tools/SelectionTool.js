@@ -3,7 +3,8 @@ import { Shapes } from 'kld-intersections'
 import Tool from './Tool'
 import TransformControls from './TransformControls'
 import * as Tree from '../../utils/tree'
-import { getBbox, getSelectionElements } from '../../utils/helpers'
+import { bbox } from '../../utils/elements'
+import { getSelectionElements } from '../../utils/helpers'
 import { isPointIn, isIntersecting } from '../../utils/geometry'
 
 
@@ -43,7 +44,7 @@ const SelectionTool = (props) => (state, actions) => {
 
   const { area } = state.tools
   const selectionElements = getSelectionElements(state.elements)
-  const selectionBbox = getBbox(...selectionElements)
+  const selectionBbox = bbox(...selectionElements)
 
   const hasArea = Boolean(area)
   const hasSelection = (selectionElements.length > 0)
