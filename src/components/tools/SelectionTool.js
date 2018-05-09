@@ -3,7 +3,6 @@ import Tool from './Tool'
 import TransformControls from './TransformControls'
 import * as Tree from '../../utils/tree'
 import Rectangle from '../../shapes/rectangle'
-import { getSelectionElements } from '../../utils/helpers'
 import { project } from '../../utils/geometry'
 import { bbox, isPointIn, isInArea } from '../../utils/elements'
 
@@ -56,7 +55,8 @@ const SelectionTool = ({ active, stage, elements, selection, area, onDrag, onSel
 
       {(selection.length > 0) && (
         <TransformControls
-          elements={getSelectionElements({ tree: elements, selection })}
+          elements={elements}
+          selection={selection}
           stage={stage}
           onTransform={onTransform}
         />

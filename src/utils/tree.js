@@ -96,6 +96,11 @@ export function findCommonAncestor(tree, nodes) {
     : null
 }
 
+export function findCommonSiblings(tree, nodes) {
+  const ancestor = findCommonAncestor(tree, nodes)
+  return ancestor ? ancestor.children : tree
+}
+
 export function hasChild(tree, parent, child) {
   const childPath = findPath(tree, child)
   const parentPath = findPath(tree, parent)

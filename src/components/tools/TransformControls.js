@@ -1,7 +1,10 @@
 import { h } from 'hyperapp'
+import compact from 'lodash/compact'
 import { Matrix2D } from 'kld-affine'
+import Snapping from './Snapping'
 import withMouseEvents from '../../utils/withMouseEvents'
 import { bbox } from '../../utils/elements'
+import { getSelectionElements } from '../../utils/helpers'
 import { reflection, center, project, unproject } from '../../utils/geometry'
 
 
@@ -25,7 +28,10 @@ const Body = withMouseEvents(({ box, startDragging }) => (
 ))
 
 
-const TransformControls = ({ elements, stage: { zoom, pan }, onTransform }) => {
+const TransformControls = ({ elements, selection, stage: { zoom, pan }, onTransform }) => {
+
+  const selectionElements = getSelectionElements({ tree: elements, selection })
+
 
   function startTransformation({ e }) {
     !e.shiftKey && e.stopPropagation()
@@ -37,7 +43,7 @@ const TransformControls = ({ elements, stage: { zoom, pan }, onTransform }) => {
 
     const translation = Matrix2D.translation(tx, ty)
 
-    onTransform({ elements, transformation: translation })
+    onTransform({ elements: selectionElements, transformation: translation })
   }
 
   function scaling(gripPosition, axis) {
@@ -50,12 +56,11 @@ const TransformControls = ({ elements, stage: { zoom, pan }, onTransform }) => {
       const stageAnchor = project(anchor, zoom, pan)
       const scaling = Matrix2D.nonUniformScalingAt(sx, sy, stageAnchor)
 
-      onTransform({ elements, transformation: scaling })
+      onTransform({ elements: selectionElements, transformation: scaling })
     }
   }
 
-
-  const box = unproject(bbox(...elements), zoom, pan)
+  const box = unproject(bbox(...selectionElements), zoom, pan)
 
   const corners = [
     [box.x, box.y], // top left
@@ -97,6 +102,8 @@ const TransformControls = ({ elements, stage: { zoom, pan }, onTransform }) => {
           onMouseDrag={scaling(position, i%2===1 ? 'x' : 'y')}
         />
       ))}
+
+      <Snapping elements={elements} selection={selection} />
     </g>
   )
 }
