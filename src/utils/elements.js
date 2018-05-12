@@ -50,31 +50,39 @@ export function select(elements, oldSelection, selection, options) {
   }
 }
 
-export function group(elements, selection) {
-  const removeSelection = tree => Tree.filter(tree, element => !selection.includes(element.id))
+export function group(elements, selectionGroup) {
+  const removeSelection = tree => Tree.filter(tree, element => !selectionGroup.includes(element.id))
 
   const elementsWithoutGroup = removeSelection(elements)
 
   const children = Tree.flatten(elements)
-    .filter(element => selection.includes(element.id))
+    .filter(element => selectionGroup.includes(element.id))
     .map(({ ...element, children }) => ({ ...element, children: removeSelection(children) }))
 
   const group = create({ type: 'Group', children })
   const parent = Tree.findCommonAncestor(elements, children)
 
-  return parent
+  const tree = parent
     ? Tree.update(elementsWithoutGroup, { id: parent.id, children: { $push: [group] } })
     : [...elementsWithoutGroup, group]
+
+  const selection = [group.id]
+
+  return { tree, selection }
 }
 
-export function ungroup(elements, selection) {
-  const group = Tree.find(elements, { id: selection })
+export function ungroup(elements, groupID) {
+  const group = Tree.find(elements, { id: groupID })
   const parent = Tree.findParent(elements, group)
-  const elementsWithoutGroup = Tree.filter(elements, element => (element.id !== selection))
+  const elementsWithoutGroup = Tree.filter(elements, element => (element.id !== groupID))
 
-  return parent
+  const tree = parent
     ? Tree.update(elementsWithoutGroup, { id: parent.id, children: { $push: group.children } })
     : [...elementsWithoutGroup, ...group.children]
+
+  const selection = Tree.find(elements, { id: groupID }).children.map(({ id }) => id)
+
+  return { tree, selection }
 }
 
 export function remove(elements, removed) {

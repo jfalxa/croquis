@@ -21,25 +21,25 @@ export function select({ elements, ...options }) {
 
 export function update({ elements }) {
   return ({ tree }) => ({
-    tree: elements.reduce(Tree.update, tree),
+    tree: elements.reduce(Tree.update, tree)
   })
 }
 
 export function group() {
-  return ({ tree, selection }) => ({
-    tree: Elements.group(tree, selection),
-  })
+  return ({ tree, selection }) => (
+    Elements.group(tree, selection)
+  )
 }
 
 export function ungroup() {
-  return ({ tree, selection }) => ({
-    tree: Elements.ungroup(tree, selection[0])
-  })
+  return ({ tree, selection }) => (
+    Elements.ungroup(tree, selection[0])
+  )
 }
 
 export function remove({ elements }) {
   return ({ tree }) => ({
-    tree: Elements.remove(tree, elements),
+    tree: Elements.remove(tree, elements)
   })
 }
 

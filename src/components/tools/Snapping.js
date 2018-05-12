@@ -11,7 +11,7 @@ const Snapping = ({ elements, selection, stage: { zoom, pan } }) => {
   const siblings = findCommonSiblings(elements, selectionElements)
     .filter(sibling => !selection.includes(sibling.id))
 
-  const alignedEdges = findAligned(siblings, selectionElements, 1, true)
+  const alignedEdges = findAligned(siblings, selectionElements, 0, true)
     .map(({ edge, aligned }) => ({
       edge: edge.map(point => unproject(point, zoom, pan)),
       aligned: aligned.map(alignedEdge => alignedEdge.map(point => unproject(point, zoom, pan)))

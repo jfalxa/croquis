@@ -15,8 +15,8 @@ export function edges({ x, y, width, height }, center) {
   return center
     ? [
       ...segments,
-      [point(x, y + height/2), point(x + width, y + height/2)], // horizontal center
-      [point(x + width/2, y), point(x + width/2, y + height)], // vertical center
+      [point(x, y + Math.floor(height/2)), point(x + width, y + Math.floor(height/2))], // horizontal center
+      [point(x + Math.floor(width/2), y), point(x + Math.floor(width/2), y + height)], // vertical center
     ]
     : segments
 }
