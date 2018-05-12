@@ -6,7 +6,7 @@ import { pointIn, isInside, isIntersecting, joinBboxes } from './geometry'
 import { shapeMethod } from '../utils/helpers'
 
 
-let id = 9
+let id = 10
 
 const getAncestors = (tree, elements) => uniq(elements.map(id => Tree.findAncestor(tree, { id }).id))
 const getPaths = (tree, elements) => elements.map(id => Tree.findPath(tree, { id }))

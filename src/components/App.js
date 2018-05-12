@@ -8,6 +8,7 @@ import SelectionTool from './tools/SelectionTool'
 import RectangleTool from './tools/RectangleTool'
 import EllipseTool from './tools/EllipseTool'
 import LineTool from './tools/LineTool'
+import TextTool from './tools/TextTool'
 
 import { getSelectionElements } from '../utils/helpers'
 
@@ -16,7 +17,6 @@ const App = ({ elements, tools, stage }, actions) => {
 
   return (
     <Root>
-
       <Stage
         stage={stage}
         elements={elements.tree}
@@ -55,6 +55,14 @@ const App = ({ elements, tools, stage }, actions) => {
           stage={stage}
           initialPosition={tools.initialPosition}
           position={tools.position}
+          onDrag={actions.tools.set}
+          onCreate={actions.elements.create}
+        />
+
+        <TextTool
+          active={tools.selected === 'text'}
+          stage={stage}
+          area={tools.area}
           onDrag={actions.tools.set}
           onCreate={actions.elements.create}
         />

@@ -31,7 +31,8 @@ const state = {
           shapes.Rectangle.create({ id: 7, x: 300, y: 100, width: 100, height: 150 }),
           shapes.Rectangle.create({ id: 8, x: 300, y: 100, width: 100, height: 150 }),
         ]}
-      ]}
+      ]},
+      shapes.Text.create({ id: 9, x: 400, y: 50, width: 125, height: 50, text: 'Salut les amis des ordinateurs' })
     ]
   }
 }

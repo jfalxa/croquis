@@ -6,7 +6,8 @@ const tools = [
   'selection',
   'rectangle',
   'ellipse',
-  'line'
+  'line',
+  'text'
 ]
 
 

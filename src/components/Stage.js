@@ -95,6 +95,8 @@ const Stage = ({ elements, selection, stage, onZoomAndPan }, children) => {
       onMouseDrag={handlePan}
       onWheel={handleZoomOrPan}
     >
+      <text id="text-ruler" opacity={0} />
+
       <ZoomAndPan {...stage}>
         {elements.map(element => (
           <Shape
