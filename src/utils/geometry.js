@@ -95,7 +95,7 @@ export function project(box, zoom=1, pan={ x: 0, y: 0 }) {
 }
 
 // projects a box from the zoomed and pan viewport to the screen's one
-export function unproject(box, zoom, pan) {
+export function unproject(box, zoom=1, pan={ x: 0, y: 0 }) {
   const x = (box.x + pan.x) * zoom
   const y = (box.y + pan.y) * zoom
   const width = box.width * zoom

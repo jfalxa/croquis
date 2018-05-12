@@ -1,11 +1,32 @@
 import { h } from 'hyperapp'
-import compact from 'lodash/compact'
 import { Matrix2D } from 'kld-affine'
+import Rectangle from '../../shapes/rectangle'
 import Snapping from './Snapping'
 import withMouseEvents from '../../utils/withMouseEvents'
 import { bbox } from '../../utils/elements'
-import { getSelectionElements } from '../../utils/helpers'
+import { getSelectionElements, getScaleFactor } from '../../utils/helpers'
 import { reflection, center, project, unproject } from '../../utils/geometry'
+import { findCommonSiblings } from '../../utils/tree'
+import { getSnapVector } from '../../utils/snapping'
+
+
+function getCorners(box) {
+  return [
+    [box.x, box.y], // top left
+    [box.x + box.width, box.y], // top right
+    [box.x + box.width, box.y + box.height], // bottom right
+    [box.x, box.y + box.height] // bottom left
+  ].map(([x, y]) => ({ x, y }))
+}
+
+function getBorders(box) {
+  return [
+    [box.x + box.width/2, box.y], // top
+    [box.x + box.width, box.y + box.height/2], // right
+    [box.x + box.width/2, box.y + box.height], // bottom
+    [box.x, box.y + box.height/2] // left
+  ].map(([x, y]) => ({ x, y }))
+}
 
 
 const Grip = withMouseEvents(({ position, startDragging }) => (
@@ -28,9 +49,18 @@ const Body = withMouseEvents(({ box, startDragging }) => (
 ))
 
 
-const TransformControls = ({ elements, selection, stage: { zoom, pan }, onTransform }) => {
+const TransformControls = ({ elements, selection, stage, onTransform }) => {
+
+  const { zoom, pan } = stage
 
   const selectionElements = getSelectionElements({ tree: elements, selection })
+
+  const box = bbox(...selectionElements)
+  const screenBox = unproject(box, zoom, pan)
+  const rect = Rectangle.create(box)
+
+  const siblings = findCommonSiblings(elements, selectionElements)
+    .filter(sibling => !selection.includes(sibling.id))
 
 
   function startTransformation({ e }) {
@@ -40,52 +70,54 @@ const TransformControls = ({ elements, selection, stage: { zoom, pan }, onTransf
   function translation({ initialPosition, position }) {
     const vector = position.subtract(initialPosition)
     const { x:tx, y:ty } = project(vector, zoom)
-
     const translation = Matrix2D.translation(tx, ty)
 
-    onTransform({ elements: selectionElements, transformation: translation })
+    const scaledRect = Rectangle.transform(rect, translation)
+    const snapVector = getSnapVector(siblings, scaledRect, 10, true)
+    const screenSnapVector = unproject(snapVector, zoom)
+
+    const snappedVector = position.subtract(initialPosition).add(screenSnapVector)
+    const { x:stx, y:sty } = project(snappedVector, zoom)
+    const snappedTranslation = Matrix2D.translation(stx, sty)
+
+    onTransform({ elements: selectionElements, transformation: snappedTranslation })
   }
 
   function scaling(gripPosition, axis) {
-    const anchor = reflection(gripPosition, center(box))
+    const anchor = reflection(gripPosition, center(screenBox))
+    const stageAnchor = project(anchor, zoom, pan)
 
     return ({ initialPosition, position }) => {
-      const sx = (!axis || axis === 'x') ? (position.x - anchor.x) / (initialPosition.x - anchor.x) : 1
-      const sy = (!axis || axis === 'y') ? (position.y - anchor.y) / (initialPosition.y - anchor.y) : 1
-
-      const stageAnchor = project(anchor, zoom, pan)
+      const { x:sx, y:sy } = getScaleFactor(anchor, initialPosition, position, axis)
       const scaling = Matrix2D.nonUniformScalingAt(sx, sy, stageAnchor)
 
-      onTransform({ elements: selectionElements, transformation: scaling })
+      const scaledRect = Rectangle.transform(rect, scaling)
+      const snapVector = getSnapVector(siblings, scaledRect, 10)
+      const screenSnapVector = unproject(snapVector, zoom)
+
+      const { x:ssx, y:ssy } = getScaleFactor(anchor, initialPosition, position.add(screenSnapVector), axis)
+      const snappedScaling = Matrix2D.nonUniformScalingAt(ssx, ssy, stageAnchor)
+
+      onTransform({ elements: selectionElements, transformation: snappedScaling })
     }
   }
-
-  const box = unproject(bbox(...selectionElements), zoom, pan)
-
-  const corners = [
-    [box.x, box.y], // top left
-    [box.x + box.width, box.y], // top right
-    [box.x + box.width, box.y + box.height], // bottom right
-    [box.x, box.y + box.height] // bottom left
-  ]
-
-  const borders = [
-    [box.x + box.width/2, box.y], // top
-    [box.x + box.width, box.y + box.height/2], // right
-    [box.x + box.width/2, box.y + box.height], // bottom
-    [box.x, box.y + box.height/2] // left
-  ]
 
 
   return (
     <g>
+      <Snapping
+        elements={elements}
+        selection={selection}
+        stage={stage}
+      />
+
       <Body
-        box={box}
+        box={screenBox}
         onMouseDown={startTransformation}
         onMouseDrag={translation}
       />
 
-      {corners.map(([x, y]) => ({ x, y })).map((position, i) => (
+      {getCorners(screenBox).map((position, i) => (
         <Grip
           key={i}
           position={position}
@@ -94,7 +126,7 @@ const TransformControls = ({ elements, selection, stage: { zoom, pan }, onTransf
         />
       ))}
 
-      {borders.map(([x, y]) => ({ x, y })).map((position, i) => (
+      {getBorders(screenBox).map((position, i) => (
         <Grip
           key={i}
           position={position}
@@ -103,7 +135,6 @@ const TransformControls = ({ elements, selection, stage: { zoom, pan }, onTransf
         />
       ))}
 
-      <Snapping elements={elements} selection={selection} />
     </g>
   )
 }

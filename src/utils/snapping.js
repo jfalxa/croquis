@@ -4,15 +4,21 @@ import { bbox } from './elements'
 import { point } from './geometry'
 
 
-export function edges({ x, y, width, height }) {
-  return [
+export function edges({ x, y, width, height }, center) {
+  const segments = [
     [point(x, y), point(x + width, y)], // top
     [point(x + width, y), point(x + width, y + height)], // right
     [point(x, y + height), point(x + width, y + height)], // bottom
     [point(x, y), point(x, y + height)], // left
-    [point(x, y + height/2), point(x + width, y + height/2)], // horizontal center
-    [point(x + width/2, y), point(x + width/2, y + height)], // vertical center
   ]
+
+  return center
+    ? [
+      ...segments,
+      [point(x, y + height/2), point(x + width, y + height/2)], // horizontal center
+      [point(x + width/2, y), point(x + width/2, y + height)], // vertical center
+    ]
+    : segments
 }
 
 export function isAligned(a, b, threshold=0) {
@@ -44,21 +50,43 @@ export function listChunks([a1, a2], [b1, b2]) {
   return common ? [common] : segments
 }
 
-export function findAligned(siblings, elements) {
-  const boxEdges = edges(bbox(...elements))
-  const siblingsEdges = siblings.map(sibling => edges(bbox(sibling)))
+export function sortByDistance(edge) {
+  return (a, b) => {
+    const distanceA = a[0].distanceFrom(edge[0])
+    const distanceB = b[0].distanceFrom(edge[0])
 
-  return compact(
-    flatMap(boxEdges,
-      boxEdge => flatMap(siblingsEdges,
-        edges => edges.map(
-          siblingEdge => (
-            isAligned(boxEdge, siblingEdge, 15)
-              ? [boxEdge, siblingEdge]
-              : null
-          )
-        )
-      )
-    )
-  )
+    return distanceA - distanceB
+  }
+}
+
+export function findAligned(siblings, elements, threshold, center) {
+  const boxEdges = edges(bbox(...elements), center)
+  const siblingEdges = flatMap(siblings, sibling => edges(bbox(sibling), true))
+
+  // for each edge of the box, find all sibling edges that are ~aligned
+  return boxEdges.map(boxEdge => ({
+    edge: boxEdge,
+    aligned: siblingEdges.filter(siblingEdge => isAligned(boxEdge, siblingEdge, threshold))
+      .sort(sortByDistance(boxEdge))
+  })).filter(found => found.aligned.length > 0)
+}
+
+export function getSnapVector(elements, rect, threshold, center) {
+  const alignedEdges = findAligned(elements, [rect], threshold, center)
+
+  const vectors = alignedEdges.map(({ edge, aligned }) => aligned[0][0].subtract(edge[0]))
+    .map(({ x, y }) => ({
+      x: Math.abs(x) <= threshold ? x : 0,
+      y: Math.abs(y) <= threshold ? y : 0
+    }))
+
+  const snapVector = vectors.reduce((min, vector) => ({
+      x: (vector.x !== 0) && Math.abs(vector.x) < Math.abs(min.x) ? vector.x : min.x,
+      y: (vector.y !== 0) && Math.abs(vector.y) < Math.abs(min.y) ? vector.y : min.y
+    }), { x: Infinity, y: Infinity })
+
+  snapVector.x = snapVector.x === Infinity ? 0 : snapVector.x
+  snapVector.y = snapVector.y === Infinity ? 0 : snapVector.y
+
+  return snapVector
 }

@@ -38,3 +38,10 @@ export function shapeMethod(method) {
 export function updateZoom(zoom, modifier) {
   return Math.max(0.1, Math.min(zoom + modifier/300, 10))
 }
+
+export function getScaleFactor(anchor, initialPosition, position, axis) {
+  return {
+    x: (!axis || axis === 'x') ? (position.x - anchor.x) / (initialPosition.x - anchor.x) : 1,
+    y: (!axis || axis === 'y') ? (position.y - anchor.y) / (initialPosition.y - anchor.y) : 1
+  }
+}
