@@ -108,16 +108,15 @@ export function hasChild(tree, parent, child) {
   return String(childPath).startsWith(parentPath)
 }
 
-export function update(tree, { children, ...node}) {
-  const command = { $merge: node }
+export function update(tree, { id, children, ...node }) {
+  const command = node
 
   if (children) {
     command.children = Array.isArray(children)
       ? { $set: children }
       : children
   }
-
-  const path = findPath(tree, node)
+  const path = findPath(tree, { id })
   const patch = buildPatch(path, command)
 
   return immutableUpdate(tree, patch)

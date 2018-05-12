@@ -13,9 +13,11 @@ const InspectorContainer = styled('div')({
 })
 
 
-const Inspector = ({ elements, onTransform, onText, onGroup, onUngroup }) => {
+const Inspector = ({ elements, onTransform, onText, onStyle, onGroup, onUngroup }) => {
 
   const selectionBbox = bbox(...elements)
+  const singleSelection = (elements.length === 1) ? elements[0] : null
+  const style = (singleSelection && singleSelection.style) || {}
 
 
   function updateBbox(e) {
@@ -45,22 +47,25 @@ const Inspector = ({ elements, onTransform, onText, onGroup, onUngroup }) => {
     onTransform({ elements, transformation: scaling })
   }
 
-  function handleChangeText(e) {
+  function handleText(e) {
     onText({ element: elements[0], text: e.target.value })
+  }
+
+  function handleStyle(e) {
+    const style = { [e.target.name]: e.target.value }
+    onStyle({ element: elements[0], style })
   }
 
 
   return (
     <InspectorContainer>
-      <div>
-        {(elements.length > 1) && (
-          <button onclick={onGroup}>Group</button>
-        )}
+      {(elements.length > 1) && (
+        <button onclick={onGroup}>Group</button>
+      )}
 
-        {(elements.length === 1) && (elements[0].type === 'Group') && (
-          <button onclick={onUngroup}>Ungroup</button>
-        )}
-      </div>
+      {singleSelection && (singleSelection.type === 'Group') && (
+        <button onclick={onUngroup}>Ungroup</button>
+      )}
 
       <div>
         <b>Layout</b>
@@ -94,14 +99,41 @@ const Inspector = ({ elements, onTransform, onText, onGroup, onUngroup }) => {
         />
       </div>
 
-      {(elements.length === 1) && (elements[0].type === 'Text') && (
+      {singleSelection && (
+        <div>
+          <b>Appearance</b>
+
+          <input
+            placeholder="fill"
+            name="fill"
+            value={style.fill}
+            onchange={handleStyle}
+          />
+
+          <input
+            placeholder="stroke"
+            name="stroke"
+            value={style.stroke}
+            onchange={handleStyle}
+          />
+
+          <input
+            placeholder="stroke width"
+            name="stroke-width"
+            value={style['stroke-width']}
+            onchange={handleStyle}
+          />
+        </div>
+      )}
+
+      {singleSelection && (singleSelection.type === 'Text') && (
         <div>
           <b>Text</b>
           <input
             placeholder="text"
             name="text"
             value={elements[0].text}
-            onchange={handleChangeText}
+            onchange={handleText}
           />
         </div>
       )}

@@ -52,12 +52,19 @@ export function move({ elements, target, relativePosition }) {
 export function transform({ elements, transformation }) {
   return (state, actions) => actions.update({
     elements: Elements.transform(elements, transformation)
+      .map(({ id, ...element }) => ({ id, $merge: element }))
   })
 }
 
 export function text({ element, text }) {
   return (state, actions) => actions.update({
-    elements: [{ id: element.id, text}]
+    elements: [{ id: element.id, text: { $set: text }}]
+  })
+}
+
+export function style({ element, style }) {
+  return (state, actions) => actions.update({
+    elements: [{ id: element.id, style: { $merge: style } }]
   })
 }
 

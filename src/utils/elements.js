@@ -16,7 +16,7 @@ const shapeTransform = shapeMethod('transform')
 
 
 export function create(element) {
-  return { ...element, id: id++ }
+  return { id: id++, style: {}, ...element }
 }
 
 export function select(elements, oldSelection, selection, options) {

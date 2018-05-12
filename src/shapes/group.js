@@ -1,8 +1,8 @@
 import { h } from 'hyperapp'
 
 
-const Group = (props, children) => (
-  <g>{children}</g>
+const Group = ({ style }, children) => (
+  <g {...style}>{children}</g>
 )
 
 Group.type = 'Group'
