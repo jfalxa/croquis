@@ -19,21 +19,19 @@ const state = {
     selection: [],
 
     tree: [
-      shapes.Rectangle.create({ id: 0, x: 200, y: 300, width: 400, height: 100 }),
-      shapes.Rectangle.create({ id: 1, x: 300, y: 100, width: 100, height: 150 }),
-       // { id: 2, type: 'Group', children: [
-       //  { id: 3, type: 'Group', children: [
-       //    shapes.Rectangle.create({ id: 0, x: 200, y: 300, width: 400, height: 100 }),
-       //    shapes.Rectangle.create({ id: 1, x: 300, y: 100, width: 100, height: 150 }),
-       //  ]}
-      // ]},
-      // { id: 4, type: 'Group', children: [
-       //  { id: 5, type: 'Group', children: [
-       //    shapes.Rectangle.create({ id: 6, x: 200, y: 300, width: 400, height: 100 }),
-       //    shapes.Rectangle.create({ id: 7, x: 300, y: 100, width: 100, height: 150 }),
-       //    shapes.Rectangle.create({ id: 8, x: 300, y: 100, width: 100, height: 150 }),
-       //  ]}
-      // ]}
+      { id: 2, type: 'Group', children: [
+        { id: 3, type: 'Group', children: [
+          shapes.Rectangle.create({ id: 0, x: 200, y: 300, width: 400, height: 100 }),
+          shapes.Rectangle.create({ id: 1, x: 300, y: 100, width: 100, height: 150 }),
+        ]}
+      ]},
+      { id: 4, type: 'Group', children: [
+        { id: 5, type: 'Group', children: [
+          shapes.Rectangle.create({ id: 6, x: 200, y: 300, width: 400, height: 100 }),
+          shapes.Rectangle.create({ id: 7, x: 300, y: 100, width: 100, height: 150 }),
+          shapes.Rectangle.create({ id: 8, x: 300, y: 100, width: 100, height: 150 }),
+        ]}
+      ]}
     ]
   }
 }

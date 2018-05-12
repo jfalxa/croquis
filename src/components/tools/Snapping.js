@@ -7,6 +7,7 @@ import { findAligned, listChunks } from '../../utils/snapping'
 
 const Snapping = ({ elements, selection, stage: { zoom, pan } }) => {
   const selectionElements = getSelectionElements({ tree: elements, selection })
+
   const siblings = findCommonSiblings(elements, selectionElements)
     .filter(sibling => !selection.includes(sibling.id))
 

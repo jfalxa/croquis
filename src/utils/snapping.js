@@ -34,7 +34,7 @@ export function isPointInSegment(point, [p1, p2]) {
   return Math.abs((pointP1 + pointP2) - p1P2) < 5
 }
 
-export function intersection(a, b) {
+export function findCommon(a, b) {
   const aInB = a.filter(point => isPointInSegment(point, b))
   const bInA = b.filter(point => isPointInSegment(point, a))
 
@@ -45,7 +45,7 @@ export function intersection(a, b) {
 
 export function listChunks([a1, a2], [b1, b2]) {
   const segments = [[a1, b1], [a2, b2]]
-  const common = intersection(...segments)
+  const common = findCommon(...segments)
 
   return common ? [common] : segments
 }
