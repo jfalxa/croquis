@@ -13,7 +13,7 @@ const InspectorContainer = styled('div')({
 })
 
 
-const Inspector = ({ elements, onTransform, onGroup, onUngroup }) => {
+const Inspector = ({ elements, onTransform, onText, onGroup, onUngroup }) => {
 
   const selectionBbox = bbox(...elements)
 
@@ -45,44 +45,66 @@ const Inspector = ({ elements, onTransform, onGroup, onUngroup }) => {
     onTransform({ elements, transformation: scaling })
   }
 
+  function handleChangeText(e) {
+    onText({ element: elements[0], text: e.target.value })
+  }
+
 
   return (
     <InspectorContainer>
-      {(elements.length > 1) && (
-        <button onclick={onGroup}>Group</button>
+      <div>
+        {(elements.length > 1) && (
+          <button onclick={onGroup}>Group</button>
+        )}
+
+        {(elements.length === 1) && (elements[0].type === 'Group') && (
+          <button onclick={onUngroup}>Ungroup</button>
+        )}
+      </div>
+
+      <div>
+        <b>Layout</b>
+
+        <input
+          placeholder="x"
+          name="x"
+          value={selectionBbox.x}
+          onchange={handleTranslation}
+        />
+
+        <input
+          placeholder="y"
+          name="y"
+          value={selectionBbox.y}
+          onchange={handleTranslation}
+        />
+
+        <input
+          placeholder="width"
+          name="width"
+          value={selectionBbox.width}
+          onchange={handleScaling}
+        />
+
+        <input
+          placeholder="height"
+          name="height"
+          value={selectionBbox.height}
+          onchange={handleScaling}
+        />
+      </div>
+
+      {(elements.length === 1) && (elements[0].type === 'Text') && (
+        <div>
+          <b>Text</b>
+          <input
+            placeholder="text"
+            name="text"
+            value={elements[0].text}
+            onchange={handleChangeText}
+          />
+        </div>
       )}
-
-      {(elements.length === 1) && (elements[0].type === 'Group') && (
-        <button onclick={onUngroup}>Ungroup</button>
-      )}
-
-      <input
-        placeholder="x"
-        name="x"
-        value={selectionBbox.x}
-        onchange={handleTranslation}
-      />
-
-      <input
-        placeholder="y"
-        name="y"
-        value={selectionBbox.y}
-        onchange={handleTranslation}
-      />
-
-      <input
-        placeholder="width"
-        name="width"
-        value={selectionBbox.width}
-        onchange={handleScaling}
-      />
-
-      <input
-        placeholder="height"
-        name="height"
-        value={selectionBbox.height}
-        onchange={handleScaling}
-      />
     </InspectorContainer>
   )
 }

@@ -3,9 +3,6 @@ import Tool from './Tool'
 import Text from '../../shapes/text'
 import { project } from '../../utils/geometry'
 
-const TXT = `Salut les amis \ndes ordinateurs`
-
-
 
 const TextTool = ({ active, area, stage: { zoom, pan }, onDrag, onCreate }) => {
 
@@ -19,14 +16,14 @@ const TextTool = ({ active, area, stage: { zoom, pan }, onDrag, onCreate }) => {
     }
 
     const rect = project(area, zoom, pan)
-    const text = Text.create({ ...rect, text: TXT })
+    const text = Text.create({ ...rect, text: 'Text' })
 
     onCreate(text)
     onDrag({ area: null })
   }
 
 
-  const text = area && Text.create({ ...area, text: TXT })
+  const text = area && Text.create({ ...area, text: 'Text' })
 
   return (
     <Tool

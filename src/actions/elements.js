@@ -3,9 +3,14 @@ import * as Elements from '../utils/elements'
 
 
 export function create(element) {
-  return ({ tree }) => ({
-    tree: [...tree, Elements.create(element)]
-  })
+  return ({ tree }) => {
+    const newElement = Elements.create(element)
+
+    return ({
+      tree: [...tree, newElement],
+      selection: [newElement.id]
+    })
+  }
 }
 
 export function select({ elements, ...options }) {
@@ -49,3 +54,10 @@ export function transform({ elements, transformation }) {
     elements: Elements.transform(elements, transformation)
   })
 }
+
+export function text({ element, text }) {
+  return (state, actions) => actions.update({
+    elements: [{ id: element.id, text}]
+  })
+}
+

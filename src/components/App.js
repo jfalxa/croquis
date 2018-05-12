@@ -84,6 +84,7 @@ const App = ({ elements, tools, stage }, actions) => {
       <Inspector
         elements={getSelectionElements(elements)}
         onTransform={actions.elements.transform}
+        onText={actions.elements.text}
         onGroup={actions.elements.group}
         onUngroup={actions.elements.ungroup}
       />
