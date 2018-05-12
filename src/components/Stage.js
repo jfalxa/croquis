@@ -22,8 +22,10 @@ const selectionStyle = {
   strokeWidth: 2
 }
 
-const Selection = ({ type, ...props }) => {
-  if (type === 'Group') {
+const Selection = (props) => {
+  const { type } = props
+
+  if (type === 'Group' || type === 'Text') {
     return <rect {...bbox(props)} {...selectionStyle} />
   }
 
