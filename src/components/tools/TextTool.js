@@ -16,14 +16,14 @@ const TextTool = ({ active, area, stage: { zoom, pan }, onDrag, onCreate }) => {
     }
 
     const rect = project(area, zoom, pan)
-    const text = Text.create({ ...rect, text: 'Text' })
+    const text = Text.create({ ...rect, text: '' })
 
     onCreate(text)
     onDrag({ area: null })
   }
 
 
-  const text = area && Text.create({ ...area, text: 'Text' })
+  const text = area && Text.create({ ...area, text: '' })
 
   return (
     <Tool
