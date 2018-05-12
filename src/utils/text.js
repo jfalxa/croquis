@@ -7,28 +7,27 @@ function getRuler() {
 
 export function fit(text, width, ruler) {
   let first = 0
-  let last = 0
+  let length = -1
   let lines = []
 
   ruler.innerHTML = text
 
   text.split(' ').forEach((word, i, words) => {
-    const wordEnd = last + word.length
+    const potentialLength = length + 1 + word.length
 
     // if the length to the word end is too big, it means that until the word
     // before, we have a line
-    if (first < last && ruler.getSubStringLength(first, wordEnd) > width) {
-      lines.push(text.slice(first, last-1))
-      first = last
+    if (length > 0 && ruler.getSubStringLength(first, potentialLength) > width) {
+      lines.push(text.slice(first, first+length))
+      first = first + length + 1 // +1 to take into account spaces that were removed by split
+      length = word.length
+    } else {
+      length = potentialLength
     }
-
-    // always add what's left of the string as the last line
-    if (i === words.length-1) {
-      lines.push(text.slice(first, wordEnd))
-    }
-
-    last = wordEnd + 1 // +1 for the space that is removed by the split earlier
   })
+
+  // don't forgot to put what's left of the string in the last line
+  lines.push(text.slice(first))
 
   return lines
 }
