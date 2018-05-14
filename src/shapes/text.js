@@ -9,30 +9,22 @@ const Text = ({ text, shape, style, font }) => {
   const box = bbox(shape.args)
 
   return (
-    <g>
-      <rect
-        {...box}
-        fill="none"
-        stroke="none"
-        {...style}
-      />
-
-      <text
-        x={box.x}
-        y={box.y}
-        {...font}
-      >
-        {getTextLines(text, font, box).map((line, i) => (
-          <tspan
-            key={i}
-            x={box.x}
-            dy={20}
-          >
-            {line}
-          </tspan>
-        ))}
-      </text>
-    </g>
+    <text
+      x={box.x}
+      y={box.y}
+      {...style}
+      {...font}
+    >
+      {getTextLines(text, font, box).map((line, i) => (
+        <tspan
+          key={i}
+          x={box.x}
+          dy={20}
+        >
+          {line}
+        </tspan>
+      ))}
+    </text>
   )
 }
 
