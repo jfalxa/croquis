@@ -8,7 +8,7 @@ import { findAligned, listChunks } from '../../utils/snapping'
 const Snapping = ({ elements, selection, stage: { zoom, pan } }) => {
   const selectionElements = getSelectionElements({ tree: elements, selection })
 
-  const siblings = findSiblings(elements, selectionElements[0])
+  const siblings = findSiblings(elements, { id: selection[0] })
     .filter(sibling => !selection.includes(sibling.id))
 
   const alignedEdges = findAligned(siblings, selectionElements, 0, true)

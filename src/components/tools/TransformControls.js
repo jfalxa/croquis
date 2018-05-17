@@ -71,7 +71,7 @@ const TransformControls = ({ elements, selection, stage, onTransform }) => {
   const box = bbox(...selectionElements)
   const screenBox = unproject(box, zoom, pan)
   const rect = Rectangle.create(box)
-  const siblings = findSiblings(elements, selectionElements[0])
+  const siblings = findSiblings(elements, { id: selection[0] })
     .filter(sibling => !selection.includes(sibling.id))
 
 
