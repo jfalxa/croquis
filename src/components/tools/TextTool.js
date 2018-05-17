@@ -1,6 +1,7 @@
 import { h } from 'hyperapp'
 import Tool from './Tool'
 import Text from '../../shapes/text'
+import Rectangle from '../../shapes/rectangle'
 import { project } from '../../utils/geometry'
 
 
@@ -15,8 +16,10 @@ const TextTool = ({ active, area, stage: { zoom, pan }, onDrag, onCreate }) => {
       return
     }
 
+    const inputText = prompt('Enter text:')
+
     const rect = project(area, zoom, pan)
-    const text = Text.create({ ...rect, text: '' })
+    const text = Text.create({ ...rect, text: inputText })
 
     onCreate(text)
     onDrag({ area: null })
@@ -31,13 +34,7 @@ const TextTool = ({ active, area, stage: { zoom, pan }, onDrag, onCreate }) => {
       onMouseDrag={drawText}
       onMouseUp={addText}
     >
-      {text && (
-        <Text
-          {...text}
-          font={{ fill: 'blue' }}
-          style={{ stroke: 'blue' }}
-        />
-      )}
+      {text && <Rectangle {...text} style={{ fill: 'none', stroke: 'blue' }} />}
     </Tool>
   )
 }
