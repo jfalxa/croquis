@@ -102,13 +102,8 @@ export function transform(elements, transformation) {
     .map(element => shapeTransform(element, transformation))
 }
 
-export function duplicate(elements, sources) {
-  const sourceElements = sources.map(id => Tree.find(elements, { id }))
-
-  const tree = Tree.map(sourceElements, element => create(element))
-  const selection = (tree).map(({ id }) => id)
-
-  return { tree: [...elements, ...tree], selection }
+export function duplicate(elements) {
+  return Tree.map(elements, element => create(element))
 }
 
 export function bbox(...elements) {

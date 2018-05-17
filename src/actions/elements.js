@@ -57,7 +57,13 @@ export function transform({ elements, transformation }) {
 }
 
 export function duplicate({ elements }) {
-  return ({ tree }) => Elements.duplicate(tree, elements)
+  return ({ tree }) => {
+    const sourceElements = elements.map(id => Tree.find(tree, { id }))
+    const copy = Elements.duplicate(sourceElements)
+    const selection = copy.map(element => element.id)
+
+    return { tree: [...tree, ...copy], selection }
+  }
 }
 
 export function text({ element, text }) {
