@@ -6,7 +6,8 @@ const Tool = withMouseEvents(({ active, name, startDragging }, children) => acti
   <g onmousedown={e => (e.button === 0) && startDragging(e)}>
     <rect
       fill="transparent"
-      style={{ width: '100%', height: '100%' }}
+      width="100%"
+      height="100%"
     />
 
     {children}
