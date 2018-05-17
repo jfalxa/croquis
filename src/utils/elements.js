@@ -79,7 +79,11 @@ export function move(elements, targetID, movedIDs, relativePosition) {
   const moved = movedIDs.map(id => Tree.find(elements, { id }) || { id })
   const target = Tree.find(elements, { id: targetID })
 
-  return Tree.insert(elements, target, moved, relativePosition)
+  const treeWithoutMoved = Tree.filter(elements, node => !movedIDs.includes(node.id))
+
+  return (relativePosition === 'first-child')
+    ? Tree.prependChild(treeWithoutMoved, target, moved)
+    : Tree.insert(treeWithoutMoved, target, moved, relativePosition)
 }
 
 export function transform(elements, transformation) {

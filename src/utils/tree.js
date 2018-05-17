@@ -96,21 +96,25 @@ export function update(tree, { id, children, ...node }) {
       ? { $set: children }
       : children
   }
+
   const path = findPath(tree, { id })
   const patch = buildPatch(path, command)
 
   return immutableUpdate(tree, patch)
 }
 
-export function insert(tree, target, nodes, relativePosition=1) {
-  const movedIDs = nodes.map(node => node.id)
-  const treeWithoutNode = filter(tree, node => !movedIDs.includes(node.id))
-  const targetIndex = last(findPath(treeWithoutNode, target))
-  const targetParent = findParent(treeWithoutNode, target)
+export function prependChild(tree, target, nodes) {
+  return update(tree, { id: target.id, children: { $splice: [[0, 0, ...nodes]] } })
+}
 
-  const spliceArgs = [targetIndex + relativePosition, 0, ...nodes]
+export function insert(tree, target, nodes, relativePosition='after') {
+  const targetIndex = last(findPath(tree, target))
+  const targetParent = findParent(tree, target)
+  const indexDelta = (relativePosition === 'after') ? 1 : 0
+
+  const spliceArgs = [targetIndex + indexDelta, 0, ...nodes]
 
   return targetParent
-    ? update(treeWithoutNode, { id: targetParent.id, children: { $splice: [spliceArgs] } })
-    : splice(treeWithoutNode, ...spliceArgs)
+    ? update(tree, { id: targetParent.id, children: { $splice: [spliceArgs] } })
+    : splice(tree, ...spliceArgs)
 }

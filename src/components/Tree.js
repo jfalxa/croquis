@@ -1,12 +1,20 @@
 import { h } from 'hyperapp'
 
 
-const Tree = ({ nodes, renderNode:Node }) => (
+const Tree = ({ nodes, depth=0, renderNode:Node }) => (
   <ul>
-    {nodes.map(({ ...node, children }) => (
-      <Node key={node.id} {...node}>
-        {(children && children.length > 0) && (
-          <Tree nodes={children} renderNode={Node} />
+    {nodes.map(node => (
+      <Node
+        key={node.id}
+        depth={depth}
+        {...node}
+      >
+        {(node.children && node.children.length > 0) && (
+          <Tree
+            nodes={node.children}
+            depth={depth+1}
+            renderNode={Node}
+          />
         )}
       </Node>
     ))}

@@ -4,9 +4,13 @@ import styled from '../style'
 import { hasChild } from '../utils/tree'
 
 
-function getRelativePosition(e) {
+function getRelativePosition(e, type) {
   const { y, height } = e.target.getBoundingClientRect()
-  return (e.y < y + height/2) ? 0 : 1
+  const position = (e.y < y + height/2) ? 'before' : 'after'
+
+  return (type === 'Group' && position === 'after')
+    ? 'first-child'
+    : position
 }
 
 const LayersContainer = styled('div')({
@@ -23,20 +27,26 @@ const DummyNode = styled('li')({
 const LayerNode = styled('div')(props => ({
   flexDirection: 'row',
   justifyContent: 'space-between',
-  fontWeight: props.selected ? 'bold' : 'normal'
+  padding: '5px',
+  paddingLeft: 5 + props.depth * 20 + 'px',
+  width: '200px',
+  fontWeight: props.selected ? 'bold' : 'normal',
+  backgroundColor: props.selected ? 'lightgrey' : 'none'
 }))
 
-const Layer = ({ id, type, selected, onSelect, onRemove, onDragStart, onDragOver, onDrop }, children) => (
+const Layer = ({ id, depth, type, selected, onSelect, onRemove, onDragStart, onDragOver, onDragEnd }, children) => (
   <li>
     <LayerNode
+      depth={depth}
       draggable={true}
       selected={selected}
       onclick={e => onSelect({ elements: [id], subselection: true, toggle: e.shiftKey })}
       ondragstart={onDragStart(id)}
-      ondragover={onDragOver(id)}
-      ondrop={onDrop(id)}
+      ondragover={onDragOver(id, type)}
+      ondragend={onDragEnd}
+      ondrop={e => e.preventDefault()}
     >
-      {type} {id}
+      <span>{type} {id}</span>
       <button onclick={onRemove(id)}>X</button>
     </LayerNode>
 
@@ -49,6 +59,21 @@ const LayerOrDummy = (props, children) => (
     ? <DummyNode />
     : <Layer {...props}>{children}</Layer>
 )
+
+const LayerTree = styled(Tree)(props => ({
+  margin: 0,
+  padding: 0,
+
+  ul: {
+    margin: 0,
+    padding: 0
+  },
+
+  li: {
+    margin: 0,
+    padding: 0
+  }
+}))
 
 const Layers = ({ elements, selection, onSelect, onMove, onRemove }) => {
 
@@ -66,37 +91,36 @@ const Layers = ({ elements, selection, onSelect, onMove, onRemove }) => {
         e.preventDefault()
       }
 
-      e.dataTransfer.setData('text/plain', id)
+      e.dataTransfer.setDragImage(new Image(), 0, 0)
     }
   }
 
-  function handleDragOver(id) {
+  function handleDragOver(id, type) {
     return (e) => {
-      const dragged = e.dataTransfer.getData('text/plain')
+      const isDragged = selection.includes(id)
+      const isDraggedChild = selection.some(dragged => hasChild(elements, { id: dragged }, { id }))
 
-      if (dragged === id || hasChild(elements, { id: dragged }, { id })) {
+      if (isDragged || isDraggedChild) {
         return
       }
 
       e.preventDefault()
 
-      const relativePosition = getRelativePosition(e)
+      const relativePosition = getRelativePosition(e, type)
+
       onMove({ elements: ['dummy'], target: id, relativePosition })
     }
   }
 
-  function handleDrop(id) {
-    return (e) => {
-      const relativePosition = getRelativePosition(e)
-
-      onRemove({ elements: ['dummy'] })
-      onMove({ elements: selection, target: id, relativePosition })
-    }
+  function handleDragEnd() {
+    onMove({ elements: selection, target: 'dummy' })
+    onRemove({ elements: ['dummy'] })
   }
+
 
   return (
     <LayersContainer>
-      <Tree
+      <LayerTree
         nodes={elements}
         renderNode={(element, children) => (
           <LayerOrDummy
@@ -106,7 +130,7 @@ const Layers = ({ elements, selection, onSelect, onMove, onRemove }) => {
             onRemove={handleRemove}
             onDragStart={handleDragStart}
             onDragOver={handleDragOver}
-            onDrop={handleDrop}
+            onDragEnd={handleDragEnd}
           >
             {children}
           </LayerOrDummy>
