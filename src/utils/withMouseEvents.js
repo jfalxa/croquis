@@ -2,7 +2,7 @@ import { h } from 'hyperapp'
 import { point, bbox } from './geometry'
 
 
-function getMouseData (e, initialPosition) {
+export function getMouseData(e, initialPosition={ x: 0, y: 0 }) {
   const position = point(e.pageX, e.pageY)
   const delta = position.subtract(initialPosition)
   const area = bbox([initialPosition, position])

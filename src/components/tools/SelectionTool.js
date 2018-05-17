@@ -23,7 +23,8 @@ const SelectionTool = ({ active, stage, elements, selection, area, onDrag, onSel
 
     onSelect({
       elements: found ? [found.id] : [],
-      toggle: e.shiftKey
+      toggle: e.shiftKey,
+      subselection: (e.type === 'dblclick')
     })
   }
 
@@ -48,6 +49,7 @@ const SelectionTool = ({ active, stage, elements, selection, area, onDrag, onSel
     <Tool
       active={active}
       onMouseDown={selectElement}
+      onDoubleClick={selectElement}
       onMouseDrag={selectElementsInArea}
       onMouseUp={endSelection}
     >
