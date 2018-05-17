@@ -18,10 +18,13 @@ const TextTool = ({ active, area, stage: { zoom, pan }, onDrag, onCreate }) => {
 
     const inputText = prompt('Enter text:')
 
-    const rect = project(area, zoom, pan)
-    const text = Text.create({ ...rect, text: inputText })
+    if (inputText) {
+      const rect = project(area, zoom, pan)
+      const text = Text.create({ ...rect, text: inputText })
 
-    onCreate(text)
+      onCreate(text)
+    }
+
     onDrag({ area: null })
   }
 
