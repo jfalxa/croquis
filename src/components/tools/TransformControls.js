@@ -6,7 +6,7 @@ import withMouseEvents from '../../utils/withMouseEvents'
 import { bbox } from '../../utils/elements'
 import { getSelectionElements, getScaleFactor } from '../../utils/helpers'
 import { reflection, center, project, unproject } from '../../utils/geometry'
-import { findCommonSiblings } from '../../utils/tree'
+import { findSiblings } from '../../utils/tree'
 import { getSnapVector } from '../../utils/snapping'
 
 
@@ -71,7 +71,7 @@ const TransformControls = ({ elements, selection, stage, onTransform }) => {
   const box = bbox(...selectionElements)
   const screenBox = unproject(box, zoom, pan)
   const rect = Rectangle.create(box)
-  const siblings = findCommonSiblings(elements, selectionElements)
+  const siblings = findSiblings(elements, selectionElements[0])
     .filter(sibling => !selection.includes(sibling.id))
 
 

@@ -71,6 +71,11 @@ export function findParent(tree, node) {
     : null
 }
 
+export function findSiblings(tree, node) {
+  const parent = findParent(tree, node)
+  return parent ? parent.children : tree
+}
+
 export function findAncestor(tree, node) {
   const path = findPath(tree, node)
   return tree[path[0]]
@@ -99,11 +104,6 @@ export function findCommonAncestor(tree, nodes) {
   return (commonAncestorPath.length > 0)
     ? at(tree, commonAncestorPath)
     : null
-}
-
-export function findCommonSiblings(tree, nodes) {
-  const ancestor = findCommonAncestor(tree, nodes)
-  return ancestor ? ancestor.children : tree
 }
 
 export function hasChild(tree, parent, child) {

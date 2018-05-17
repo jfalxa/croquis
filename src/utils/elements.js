@@ -20,33 +20,19 @@ export function create(element) {
 }
 
 export function select(elements, oldSelection, selection, options) {
-  // basic case: user clicks on an element in the layer tree
-  if (!options.toggle && options.subselection) {
-    return selection
+
+  const newSelection = !options.subselection
+    ? getAncestors(elements, selection)
+    : selection
+
+  if (options.toggle) {
+    const selectionParent = Tree.findParent(elements, { id: newSelection[0] })
+    const selectedSiblings = oldSelection.filter(id => Tree.findParent(elements, { id }) === selectionParent)
+
+    return xor(selectedSiblings, newSelection)
   }
-
-  // user clicks on one element on the stage
-  else if (!options.toggle && !options.subselection) {
-    return getAncestors(elements, selection)
-  }
-
-  // user shift-clicks on layer tree
-  else if (options.toggle && options.subselection) {
-    return xor(oldSelection, selection)
-  }
-
-  // user shift-clicks on the stage
-  else if (options.toggle && !options.subselection) {
-    const oldPaths = getPaths(elements, oldSelection)
-    const newPaths = getPaths(elements, selection)
-
-    // only keep the paths that are exclusive to each selection array in order
-    // to allow users to remove elements from selection by shift clicking them
-    const remainingOldPaths = oldPaths.filter(oldPath => !newPaths.some(newPath => String(newPath).startsWith(oldPath)))
-    const remainingNewPaths = newPaths.filter(newPath => !oldPaths.some(oldPath => String(newPath).startsWith(oldPath))).map(path => [path[0]])
-
-    return uniqBy([...remainingOldPaths, ...remainingNewPaths], String)
-      .map(path => Tree.at(elements, path).id)
+  else {
+    return newSelection
   }
 }
 

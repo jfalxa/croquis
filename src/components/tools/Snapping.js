@@ -1,6 +1,6 @@
 import { h } from 'hyperapp'
 import { unproject } from '../../utils/geometry'
-import { findCommonSiblings } from '../../utils/tree'
+import { findSiblings } from '../../utils/tree'
 import { getSelectionElements } from '../../utils/helpers'
 import { findAligned, listChunks } from '../../utils/snapping'
 
@@ -8,7 +8,7 @@ import { findAligned, listChunks } from '../../utils/snapping'
 const Snapping = ({ elements, selection, stage: { zoom, pan } }) => {
   const selectionElements = getSelectionElements({ tree: elements, selection })
 
-  const siblings = findCommonSiblings(elements, selectionElements)
+  const siblings = findSiblings(elements, selectionElements[0])
     .filter(sibling => !selection.includes(sibling.id))
 
   const alignedEdges = findAligned(siblings, selectionElements, 0, true)
