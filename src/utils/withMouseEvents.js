@@ -16,6 +16,8 @@ const withMouseEvents = (Component) => ({ onMouseDown, onMouseDrag, onMouseUp, .
   let initialPosition = null
 
   function handleMouseDown(e) {
+    e.preventDefault()
+
     initialPosition = point(e.pageX, e.pageY)
 
     document.addEventListener('mousemove', handleMouseDrag)

@@ -29,22 +29,35 @@ function getBorders(box) {
 }
 
 
+function onDrag(startDragging) {
+  return e => {
+    if (e.button !== 0) {
+      return
+    }
+
+    startDragging(e)
+  }
+}
+
+
 const Grip = withMouseEvents(({ position, startDragging }) => (
   <circle
+    draggable={false}
     cx={position.x}
     cy={position.y}
     r="5"
     fill="red"
-    onmousedown={e => (e.button === 0) && startDragging(e)}
+    onmousedown={onDrag(startDragging)}
   />
 ))
 
 const Body = withMouseEvents(({ box, startDragging }) => (
   <rect
     {...box}
+    draggable={false}
     fill="rgba(255, 0, 0, 0.2)"
     stroke="red"
-    onmousedown={e => (e.button === 0) && startDragging(e)}
+    onmousedown={onDrag(startDragging)}
   />
 ))
 
