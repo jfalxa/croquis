@@ -46,7 +46,7 @@ export function group(elements, selectionGroup) {
     .map(({ ...element, children }) => ({ ...element, children: removeSelection(children) }))
 
   const group = create({ type: 'Group', children })
-  const parent = Tree.findCommonAncestor(elements, children)
+  const parent = Tree.findParent(elements, children[0])
 
   const tree = parent
     ? Tree.update(elementsWithoutGroup, { id: parent.id, children: { $push: [group] } })

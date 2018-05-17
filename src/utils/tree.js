@@ -81,31 +81,6 @@ export function findAncestor(tree, node) {
   return tree[path[0]]
 }
 
-export function findCommonAncestor(tree, nodes) {
-  const parentPaths = nodes.map(node => findPath(tree, node))
-    .map(path => path.slice(0, -1))
-
-  // find common path chunk
-  // => for each level of depth, push if it's the same index
-  const commonAncestorPath = parentPaths.reduce((ancestorPath, path) => {
-    const newAncestorPath = []
-
-    ancestorPath.some((index, i) => {
-      if (path[i] !== index) {
-        return true
-      }
-
-      newAncestorPath.push(index)
-    })
-
-    return newAncestorPath
-  }, [])
-
-  return (commonAncestorPath.length > 0)
-    ? at(tree, commonAncestorPath)
-    : null
-}
-
 export function hasChild(tree, parent, child) {
   const childPath = findPath(tree, child)
   const parentPath = findPath(tree, parent)
