@@ -26,6 +26,11 @@ export function flatten(tree) {
   return uniq(flatMap(tree, node => [node, ...flatten(node.children)]))
 }
 
+export function map(tree=[], iteratee) {
+  return tree.map(node => iteratee(node))
+    .map(({ ...node, children }) => ({ ...node, children: map(children, iteratee) }))
+}
+
 export function filter(tree=[], predicate) {
   return tree.filter(node => predicate(node))
     .map(({ ...node, children }) => ({ ...node, children: filter(children, predicate) }))

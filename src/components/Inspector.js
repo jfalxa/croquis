@@ -3,6 +3,7 @@ import { Point2D, Matrix2D } from 'kld-affine'
 import styled from '../style'
 import * as Tree from '../utils/tree'
 import { bbox } from '../utils/elements'
+import { getSelectionElements } from '../utils/helpers'
 
 
 const InspectorContainer = styled('div')({
@@ -13,10 +14,11 @@ const InspectorContainer = styled('div')({
 })
 
 
-const Inspector = ({ elements, onTransform, onText, onStyle, onGroup, onUngroup }) => {
+const Inspector = ({ elements, selection, onTransform, onText, onStyle, onDuplicate, onGroup, onUngroup }) => {
 
-  const selectionBbox = bbox(...elements)
-  const singleSelection = (elements.length === 1) ? elements[0] : null
+  const selectionElements = getSelectionElements({ tree: elements, selection })
+  const selectionBbox = bbox(...selectionElements)
+  const singleSelection = (selection.length === 1) ? selectionElements[0] : null
   const style = (singleSelection && singleSelection.style) || {}
 
 
@@ -47,6 +49,10 @@ const Inspector = ({ elements, onTransform, onText, onStyle, onGroup, onUngroup 
     onTransform({ elements, transformation: scaling })
   }
 
+  function handleDuplicate() {
+    onDuplicate({ elements: selection })
+  }
+
   function handleText(e) {
     onText({ element: elements[0], text: e.target.value })
   }
@@ -59,12 +65,16 @@ const Inspector = ({ elements, onTransform, onText, onStyle, onGroup, onUngroup 
 
   return (
     <InspectorContainer>
-      {(elements.length > 1) && (
+      {(selection.length > 1) && (
         <button onclick={onGroup}>Group</button>
       )}
 
       {singleSelection && (singleSelection.type === 'Group') && (
         <button onclick={onUngroup}>Ungroup</button>
+      )}
+
+      {singleSelection && (
+        <button onclick={handleDuplicate}>Duplicate</button>
       )}
 
       <div>

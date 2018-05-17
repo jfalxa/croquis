@@ -16,7 +16,7 @@ const shapeTransform = shapeMethod('transform')
 
 
 export function create(element) {
-  return { id: id++, style: {}, ...element }
+  return { style: {}, ...element, id: id++ }
 }
 
 export function select(elements, oldSelection, selection, options) {
@@ -100,6 +100,15 @@ export function transform(elements, transformation) {
   return Tree.flatten(elements)
     .filter(element => Boolean(element.shape))
     .map(element => shapeTransform(element, transformation))
+}
+
+export function duplicate(elements, sources) {
+  const sourceElements = sources.map(id => Tree.find(elements, { id }))
+
+  const tree = Tree.map(sourceElements, element => create(element))
+  const selection = (tree).map(({ id }) => id)
+
+  return { tree: [...elements, ...tree], selection }
 }
 
 export function bbox(...elements) {

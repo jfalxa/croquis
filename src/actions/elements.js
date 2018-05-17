@@ -56,6 +56,10 @@ export function transform({ elements, transformation }) {
   })
 }
 
+export function duplicate({ elements }) {
+  return ({ tree }) => Elements.duplicate(tree, elements)
+}
+
 export function text({ element, text }) {
   return (state, actions) => actions.update({
     elements: [{ id: element.id, text: { $set: text }}]

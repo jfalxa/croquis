@@ -10,8 +10,6 @@ import EllipseTool from './tools/EllipseTool'
 import LineTool from './tools/LineTool'
 import TextTool from './tools/TextTool'
 
-import { getSelectionElements } from '../utils/helpers'
-
 
 const App = ({ elements, tools, stage }, actions) => {
 
@@ -82,10 +80,12 @@ const App = ({ elements, tools, stage }, actions) => {
       />
 
       <Inspector
-        elements={getSelectionElements(elements)}
+        elements={elements.tree}
+        selection={elements.selection}
         onTransform={actions.elements.transform}
         onStyle={actions.elements.style}
         onText={actions.elements.text}
+        onDuplicate={actions.elements.duplicate}
         onGroup={actions.elements.group}
         onUngroup={actions.elements.ungroup}
       />
