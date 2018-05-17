@@ -21,10 +21,12 @@ const DummyNode = styled('li')({
 })
 
 const LayerNode = styled('span')(props => ({
+  flexDirection: 'row',
+  justifyContent: 'space-between',
   fontWeight: props.selected ? 'bold' : 'normal'
 }))
 
-const Layer = ({ id, type, selected, onSelect, onDragStart, onDragOver, onDrop }, children) => (
+const Layer = ({ id, type, selected, onSelect, onRemove, onDragStart, onDragOver, onDrop }, children) => (
   <li>
     <LayerNode
       draggable={true}
@@ -35,6 +37,7 @@ const Layer = ({ id, type, selected, onSelect, onDragStart, onDragOver, onDrop }
       ondrop={onDrop(id)}
     >
       {type} {id}
+      <button onclick={onRemove(id)}>X</button>
     </LayerNode>
 
     {children}
@@ -50,6 +53,14 @@ const LayerOrDummy = (props, children) => (
 let dragged = null
 
 const Layers = ({ elements, selection, onSelect, onMove, onRemove }) => {
+
+  function handleRemove(id) {
+    return (e) => {
+      if (confirm(`Remove element ${id}?`)) {
+        onRemove({ elements: [id] })
+      }
+    }
+  }
 
   function handleDragStart(id) {
     return (e) => {
@@ -93,6 +104,7 @@ const Layers = ({ elements, selection, onSelect, onMove, onRemove }) => {
             {...element}
             selected={selection.includes(element.id)}
             onSelect={onSelect}
+            onRemove={handleRemove}
             onDragStart={handleDragStart}
             onDragOver={handleDragOver}
             onDrop={handleDrop}

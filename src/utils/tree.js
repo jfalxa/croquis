@@ -89,7 +89,7 @@ export function findCommonAncestor(tree, nodes) {
     })
 
     return newAncestorPath
-  })
+  }, [])
 
   return (commonAncestorPath.length > 0)
     ? at(tree, commonAncestorPath)
