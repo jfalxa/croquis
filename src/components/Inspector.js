@@ -34,7 +34,7 @@ const Inspector = ({ elements, selection, onTransform, onText, onStyle, onDuplic
 
     const translation = Matrix2D.translation(tx, ty)
 
-    onTransform({ elements, transformation: translation })
+    onTransform({ elements: selectionElements, transformation: translation })
   }
 
   function handleScaling(e) {
@@ -46,7 +46,7 @@ const Inspector = ({ elements, selection, onTransform, onText, onStyle, onDuplic
 
     const scaling = Matrix2D.nonUniformScalingAt(sx, sy, anchor)
 
-    onTransform({ elements, transformation: scaling })
+    onTransform({ elements: selectionElements, transformation: scaling })
   }
 
   function handleDuplicate() {
@@ -54,12 +54,12 @@ const Inspector = ({ elements, selection, onTransform, onText, onStyle, onDuplic
   }
 
   function handleText(e) {
-    onText({ element: elements[0], text: e.target.value })
+    onText({ element: selectionElements[0], text: e.target.value })
   }
 
   function handleStyle(e) {
     const style = { [e.target.name]: e.target.value }
-    onStyle({ element: elements[0], style })
+    onStyle({ element: selectionElements[0], style })
   }
 
 
@@ -142,7 +142,7 @@ const Inspector = ({ elements, selection, onTransform, onText, onStyle, onDuplic
           <input
             placeholder="text"
             name="text"
-            value={elements[0].text}
+            value={selectionElements[0].text}
             onchange={handleText}
           />
         </div>
