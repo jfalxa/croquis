@@ -20,7 +20,7 @@ const DummyNode = styled('li')({
   height: '2px'
 })
 
-const LayerNode = styled('span')(props => ({
+const LayerNode = styled('div')(props => ({
   flexDirection: 'row',
   justifyContent: 'space-between',
   fontWeight: props.selected ? 'bold' : 'normal'
@@ -50,8 +50,6 @@ const LayerOrDummy = (props, children) => (
     : <Layer {...props}>{children}</Layer>
 )
 
-let dragged = null
-
 const Layers = ({ elements, selection, onSelect, onMove, onRemove }) => {
 
   function handleRemove(id) {
@@ -68,12 +66,14 @@ const Layers = ({ elements, selection, onSelect, onMove, onRemove }) => {
         e.preventDefault()
       }
 
-      dragged = id
+      e.dataTransfer.setData('text/plain', id)
     }
   }
 
   function handleDragOver(id) {
     return (e) => {
+      const dragged = e.dataTransfer.getData('text/plain')
+
       if (dragged === id || hasChild(elements, { id: dragged }, { id })) {
         return
       }
@@ -87,7 +87,6 @@ const Layers = ({ elements, selection, onSelect, onMove, onRemove }) => {
 
   function handleDrop(id) {
     return (e) => {
-      dragged = null
       const relativePosition = getRelativePosition(e)
 
       onRemove({ elements: ['dummy'] })
