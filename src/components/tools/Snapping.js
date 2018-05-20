@@ -1,6 +1,7 @@
 import { h } from 'hyperapp'
 import { unproject } from '../../utils/geometry'
 import { findSiblings } from '../../utils/tree'
+import { bbox } from '../../utils/elements'
 import { getSelectionElements } from '../../utils/helpers'
 import { findAligned, listChunks } from '../../utils/snapping'
 
@@ -11,15 +12,25 @@ const Snapping = ({ elements, selection, stage: { zoom, pan } }) => {
   const siblings = findSiblings(elements, { id: selection[0] })
     .filter(sibling => !selection.includes(sibling.id))
 
+  const siblingBoxes = siblings.map(sibling => bbox(sibling))
+    .map(box => unproject(box, zoom, pan))
+
   const alignedEdges = findAligned(siblings, selectionElements, 0, true)
     .map(({ edge, aligned }) => ({
       edge: edge.map(point => unproject(point, zoom, pan)),
       aligned: aligned.map(alignedEdge => alignedEdge.map(point => unproject(point, zoom, pan)))
     }))
 
-
   return (
     <g>
+      {siblingBoxes.map(box => (
+        <rect
+          {...box}
+          fill="none"
+          stroke="cyan"
+        />
+      ))}
+
       {alignedEdges.map(({ edge, aligned }) => (
         <g stroke-width={3}>
           <line
