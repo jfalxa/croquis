@@ -85,7 +85,7 @@ const TransformControls = ({ elements, selection, stage, onTransform }) => {
     const translation = Matrix2D.translation(tx, ty)
 
     const scaledRect = Rectangle.transform(rect, translation)
-    const snapVector = getSnapVector(siblings, scaledRect, 10, true)
+    const snapVector = getSnapVector(siblings, scaledRect, 10/zoom, true)
     const screenSnapVector = unproject(snapVector, zoom)
 
     const snappedVector = position.subtract(initialPosition).add(screenSnapVector)
@@ -107,7 +107,7 @@ const TransformControls = ({ elements, selection, stage, onTransform }) => {
       const scaling = Matrix2D.nonUniformScalingAt(sx, sy, stageAnchor)
 
       const scaledRect = Rectangle.transform(rect, scaling)
-      const snapVector = getSnapVector(siblings, scaledRect, 10)
+      const snapVector = getSnapVector(siblings, scaledRect, 10/zoom)
 
       const { x:ssx, y:ssy } = getScaleFactor(stageAnchor, stageInitialPosition, stagePosition.add(snapVector), axis)
       const snappedScaling = Matrix2D.nonUniformScalingAt(ssx, ssy, stageAnchor)
