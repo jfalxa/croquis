@@ -81,15 +81,15 @@ const TransformControls = ({ elements, selection, stage, onTransform }) => {
 
   function translation({ initialPosition, position }) {
     const vector = position.subtract(initialPosition)
-    const { x:tx, y:ty } = project(vector, zoom)
+    const stageVector = project(vector, zoom)
+
+    const { x:tx, y:ty } = stageVector
     const translation = Matrix2D.translation(tx, ty)
 
     const scaledRect = Rectangle.transform(rect, translation)
     const snapVector = getSnapVector(siblings, scaledRect, 10/zoom, true)
-    const screenSnapVector = unproject(snapVector, zoom)
 
-    const snappedVector = position.subtract(initialPosition).add(screenSnapVector)
-    const { x:stx, y:sty } = project(snappedVector, zoom)
+    const { x:stx, y:sty } = stageVector.add(snapVector)
     const snappedTranslation = Matrix2D.translation(stx, sty)
 
     onTransform({ elements: selectionElements, transformation: snappedTranslation })
